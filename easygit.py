@@ -293,7 +293,7 @@ def select_branch():
                 Data.config['branches'].append(branch_to_add)
                 yml_save(
                     data = Data.config,
-                    file = config_path,
+                    file_path = config_path,
                 )
             case 'delete branch':
                 pass
