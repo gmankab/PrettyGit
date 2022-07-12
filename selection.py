@@ -18,10 +18,12 @@ class Selection:
         self,
         list,
         choosen = 0,
+        sytles = []
     ) -> None:
         self.list = list
         self.choosen = choosen
         self.len = len(list)
+        self.styles = []
 
     def print(self):
         if self.choosen < 0:
@@ -29,12 +31,18 @@ class Selection:
         elif self.choosen >= self.len:
             self.choosen = 0
         print()
+        styles = self.styles
+        if not styles:
+            styles = [None] * len(self.list)
         for index, item in enumerate(self.list):
             if index == self.choosen:
                 item = f'[blue]➜[/blue]  [reverse]{item}[/reverse]'
             else:
                 item = f'    {item}'
-            print(item)
+            print(
+                item,
+                style = styles[index]
+            )
         print()
 
     def update(self):
