@@ -7,6 +7,7 @@ from selection import Selection
 import options
 import rich
 import time
+import yaml
 import sys
 import os
 from pathlib import Path
@@ -14,8 +15,8 @@ from dataclasses import dataclass
 
 rich.pretty.install()
 traceback.install(show_locals=True)
-console = rich.console.Console()
-print = console.print
+c = rich.console.Console()
+print = c.print
 Key = keyboard.Key
 proj_dir = os.getcwd()
 config_path = Path(f'{proj_dir}/.git/easygit.yml')
@@ -28,6 +29,45 @@ yes_or_no = Selection(
 )
 
 
+def yml_read_str(
+    data: str,
+) -> any:
+    return yaml.load(
+        data,
+        Loader = yaml.CLoader,
+    )
+
+
+def yml_read_file(
+    file_path: str | Path
+):
+    with open(file_path, 'r') as file:
+        return yml_read_str(
+            file
+        )
+
+
+def to_yml_str(
+    data: any,
+) -> str:
+    yaml.dump(
+        data,
+        Dumper = yaml.CDumper,
+    )
+
+
+def yml_save(
+    data: any,
+    file_path: str | Path,
+) -> None:
+    with open(file_path, 'w') as file:
+        file.write(
+            to_yml_str(
+                data,
+            )
+        )
+
+
 def git_init():
     check_git()
     check_remote()
@@ -35,9 +75,17 @@ def git_init():
         run('git init')
         config_path.parent.mkdir(
             parents=True,
-            exist_ok=True
+            exist_ok=True,
         )
-        open(config_path, 'w').close()
+        yml_save(
+            data = {
+                'branches': [
+                    'main',
+                ],
+            },
+            file_path = config_path,
+
+        )
         check_git()
         check_username()
         check_email()
@@ -102,7 +150,7 @@ def check_username():
 
             username = None
             while not username:
-                print('[green]please input new username for git:')
+                print('[green]input new username for git:')
                 username = input()
 
 
@@ -110,7 +158,7 @@ def check_email():
     if not run(
         'git config --global user.email'
     ):
-        text = '[green]please input new email for git:'
+        text = '[green]input new email for git:'
         while True:
             email = inp(text)
             print(
@@ -219,11 +267,46 @@ test.*
             )
 
 
+def select_branch():
+    while True:
+        branches_list = Data.config[
+            'branches'
+        ] + [
+            'add_new'
+            'delete branch'
+        ]
+        branches = Selection(
+            branches_list
+        )
+        print('[green]select branch:')
+        branch = branches.select()
+        match branch:
+            case 'add new':
+                branch_to_add = None
+                while not branch_to_add:
+                    print('[green]input new branch name:')
+                    branch_to_add = input()
+                Data.config['branches'].append(branch_to_add)
+                yml_save(
+                    data = Data.config,
+                    file = config_path,
+                )
+            case 'delete branch':
+                pass
+            case _:
+                return branch
+
+
+def git_push():
+    pass
+
+
 @dataclass
 class Data:
     branch = 'main'
     remote = 'origin'
     commit_message = 'aboba'
+    config = {}
     options_list = [
         {
             'args': (
@@ -285,7 +368,6 @@ def main():
     git_init()
     os.system('git add --all')
     os.system(f'git commit -m "{Data.commit_message}"')
-
 
 
 main()
