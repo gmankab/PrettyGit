@@ -292,6 +292,10 @@ def delete_branch():
             ].remove(
                 branch
             )
+            yml_save(
+                data = Data.config,
+                file_path = config_path,
+            )
             return
 
 
