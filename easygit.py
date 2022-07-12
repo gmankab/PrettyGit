@@ -368,6 +368,6 @@ def main():
     git_init()
     os.system('git add --all')
     os.system(f'git commit -m "{Data.commit_message}"')
-
+    print(select_branch())
 
 main()
