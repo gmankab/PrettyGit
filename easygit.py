@@ -276,7 +276,7 @@ def select_branch():
         branches_list = Data.config[
             'branches'
         ] + [
-            'add_new',
+            'add new',
             'delete branch',
         ]
         branches = Selection(
