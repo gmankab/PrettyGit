@@ -306,7 +306,7 @@ class Data:
     branch = 'main'
     remote = 'origin'
     commit_message = 'aboba'
-    config = {}
+    config = None
     options_list = [
         {
             'args': (
@@ -366,6 +366,9 @@ class Data:
 def main():    
     options.parse(Data.options_list)
     git_init()
+    Data.config = yml_read_file(
+        config_path
+    )
     os.system('git add --all')
     os.system(f'git commit -m "{Data.commit_message}"')
     print(select_branch())
