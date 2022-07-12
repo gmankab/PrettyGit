@@ -71,20 +71,24 @@ def yml_save(
 def git_init():
     check_git()
     check_remote()
-    if not config_path.exists():
+    if config_path.exists():
+        Data.config = yml_read_file(
+            config_path
+        )
+    else:
         run('git init')
         config_path.parent.mkdir(
             parents=True,
             exist_ok=True,
         )
+        Data.config = {
+            'branches': [
+                'main',
+            ],
+        }
         yml_save(
-            data = {
-                'branches': [
-                    'main',
-                ],
-            },
+            data = Data.config,
             file_path = config_path,
-
         )
         check_git()
         check_username()
@@ -366,9 +370,6 @@ class Data:
 def main():    
     options.parse(Data.options_list)
     git_init()
-    Data.config = yml_read_file(
-        config_path
-    )
     os.system('git add --all')
     os.system(f'git commit -m "{Data.commit_message}"')
     print(select_branch())
