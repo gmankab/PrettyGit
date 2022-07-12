@@ -324,8 +324,7 @@ def select_branch():
                     file_path = config_path,
                 )
             case 'delete branch':
-                print(1)
-                pass
+                delete_branch()
             case _:
                 return branch
 
