@@ -283,7 +283,7 @@ def select_branch():
             branches_list
         )
         print('[green]select branch:')
-        branch = branches.select()
+        branch = branches.choose()
         match branch:
             case 'add new':
                 branch_to_add = None
