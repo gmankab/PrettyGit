@@ -50,7 +50,7 @@ def yml_read_file(
 def to_yml_str(
     data: any,
 ) -> str:
-    yaml.dump(
+    return yaml.dump(
         data,
         Dumper = yaml.CDumper,
     )
