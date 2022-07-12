@@ -271,6 +271,30 @@ test.*
             )
 
 
+def delete_branch():
+    while True:
+        branches_list = Data.config[
+            'branches'
+        ] + [
+            'cancel'
+        ]
+        branches = Selection(
+            branches_list
+        )
+        print('[green]select branch to delete:')
+        branch = branches.choose()
+        if branch == 'cancel':
+            return
+        print(f'[green]do you really want to delete branch [red1]"{branch}"[/red1]?')
+        if yes_or_no.choose() == 'yes':
+            Data.config[
+                'branches'
+            ].remove(
+                branch
+            )
+            return
+
+
 def select_branch():
     while True:
         branches_list = Data.config[
