@@ -281,6 +281,7 @@ def delete_branch():
         branches = Selection(
             branches_list
         )
+        branches.styles[-1] = 'green'
         print('[green]select branch to delete:')
         branch = branches.choose()
         if branch == 'cancel':
