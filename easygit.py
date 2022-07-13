@@ -230,7 +230,7 @@ After creating repo input link here:\
             url = 'https://' + url
 
         print(
-            f'use url "{url}" for git?'
+            f'use url [deep_sky_blue1]{url}[/deep_sky_blue1] for git?'
         )
 
         if yes_or_no.choose() == 'yes':
@@ -245,6 +245,7 @@ After creating repo input link here:\
                 )
             for key, val in git_remotes.items():
                 print(f'{key}: {val}')
+            print()
             break
 
 
@@ -338,13 +339,9 @@ def select_branch():
                 return branch
 
 
-def git_push():
-    pass
-
-
 @dataclass
 class Data:
-    branch = 'main'
+    branch = None
     remote = 'origin'
     commit_message = 'aboba'
     config = None
@@ -409,6 +406,8 @@ def main():
     git_init()
     os.system('git add --all')
     os.system(f'git commit -m "{Data.commit_message}"')
-    print(select_branch())
+    if not Data.branch:
+        Data.branch = select_branch()
+    os.system(f'git push {Data.remote} {Data.branch}')
 
 main()
