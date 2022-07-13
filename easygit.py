@@ -408,6 +408,6 @@ def main():
     os.system(f'git commit -m "{Data.commit_message}"')
     if not Data.branch:
         Data.branch = select_branch()
-    os.system(f'git push --set-upstram {Data.remote} {Data.branch}')
+    os.system(f'git push --set-upstream {Data.remote} {Data.branch}')
 
 main()
