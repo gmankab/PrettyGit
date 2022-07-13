@@ -268,7 +268,7 @@ def check_gitignore():
     gitignore_path = Path(
         f"{proj_dir}/.gitignore"
     )
-    if not gitignore_path.exists:
+    if not gitignore_path.exists():
         with open(gitignore_path, 'w') as gitignore:
             gitignore.write(
 '''\
