@@ -244,7 +244,7 @@ After creating repo input link here:\
                     f'git remote get-url {remote}'
                 )
             for key, val in git_remotes.items():
-                print(f'{key}: {val}')
+                print(f'{key}: [deep_sky_blue1]{val}')
             print()
             break
 
@@ -408,6 +408,6 @@ def main():
     os.system(f'git commit -m "{Data.commit_message}"')
     if not Data.branch:
         Data.branch = select_branch()
-    os.system(f'git push {Data.remote} {Data.branch}')
+    os.system(f'git push --set-upstram {Data.remote} {Data.branch}')
 
 main()
