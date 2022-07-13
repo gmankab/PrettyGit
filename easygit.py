@@ -97,6 +97,7 @@ def git_init():
         check_git()
         check_username()
         check_email()
+        run('git branch -m main')
         if run(
             'git config --global credential.helper'
         ) != 'store':
