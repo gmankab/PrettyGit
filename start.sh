@@ -1,3 +1,3 @@
 #!/bin/bash
-python easygit.py
+python src/__init__.py
 # python test.py

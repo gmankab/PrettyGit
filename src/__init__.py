@@ -98,7 +98,6 @@ def git_init():
         check_username()
         check_email()
         check_gitignore()
-        run('git branch -m main')
         if run(
             'git config --global credential.helper'
         ) != 'store':
@@ -411,6 +410,7 @@ def main():
     os.system(f'git commit -m "{Data.commit_message}"')
     if not Data.branch:
         Data.branch = select_branch()
+    run(f'git branch -m {Data.branch}')
     os.system(f'git push --set-upstream {Data.remote} {Data.branch}')
 
 main()
