@@ -16,15 +16,15 @@ Key = keyboard.Key
 class Selection:
     def __init__(
         self,
-        list,
-        choosen = 0,
-        styles = []
+        items: list | tuple,
+        styles: list | tuple = [],
+        choosen: int = 0,
     ) -> None:
-        self.list = list
+        self.items = items
         self.choosen = choosen
-        self.len = len(list)
+        self.len = len(items)
         if not styles:
-            styles = [None] * len(self.list)
+            styles = [None] * len(self.items)
         self.styles = styles
 
     def print(self):
@@ -33,7 +33,7 @@ class Selection:
         elif self.choosen >= self.len:
             self.choosen = 0
         print()
-        for index, item in enumerate(self.list):
+        for index, item in enumerate(self.items):
             if index == self.choosen:
                 item = f'[blue]➜[/blue]  [reverse]{item}[/reverse]'
             else:
@@ -82,4 +82,4 @@ class Selection:
         if self.choosen is None:
             return None
         else:
-            return self.list[self.choosen]
+            return self.items[self.choosen]

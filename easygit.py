@@ -22,9 +22,13 @@ proj_dir = os.getcwd()
 config_path = Path(f'{proj_dir}/.git/easygit.yml')
 run_st = subprocess.getstatusoutput
 yes_or_no = Selection(
-    [
+    items = [
         'yes',
         'no',
+    ],
+    styles = [
+        'green',
+        'red'
     ]
 )
 
