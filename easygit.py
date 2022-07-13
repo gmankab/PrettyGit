@@ -310,6 +310,10 @@ def select_branch():
         branches = Selection(
             branches_list
         )
+        branches.styles[-2:] = (
+            'green',
+            'red',
+        )
         print('[green]select branch:')
         branch = branches.choose()
         match branch:
