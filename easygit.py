@@ -403,7 +403,8 @@ class Data:
     ]
 
 
-def main():    
+def main():
+    check_gitignore()
     options.parse(Data.options_list)
     git_init()
     os.system('git add --all')
