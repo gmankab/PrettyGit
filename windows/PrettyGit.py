@@ -119,8 +119,8 @@ except ImportError as error_text:
                 ignore_errors=True,
             )
 
-    command = f'{sys.executable} {" ".join(sys.argv)}'
-    print(f'running {command}')
+    restart_script = f'{sys.executable} {" ".join(sys.argv)}'
+    print(f'restarting script with command:\n{restart_script}')
     os.system(
-        command
+        restart_script
     )
