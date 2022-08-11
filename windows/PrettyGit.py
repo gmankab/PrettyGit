@@ -71,10 +71,9 @@ except ImportError:
     else:
         os.system(f'{pip} install {project_name}')
 
+    command = f'{sys.executable} {Path(__file__)}'
+    if portable:
+        command += ' portable'
     os.system(
-        " ".join(
-            [
-                sys.executable
-            ] + sys.argv[1:]
-        )
+        command
     )
