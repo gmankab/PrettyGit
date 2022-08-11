@@ -22,7 +22,8 @@ try:
     import prettygit
     sys.exit()
 except ImportError as error_text:
-    print(error_text)
+    # print(error_text)
+
     def run(
         command: str
     ) -> str:
@@ -31,6 +32,7 @@ except ImportError as error_text:
         )[-1]
 
     downloading_progress = 0
+
     def progress(
         block_num,
         block_size,
