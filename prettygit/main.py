@@ -93,6 +93,7 @@ def git_init():
         print(f'try init git in [blue]{proj_dir}[/blue]?')
         if yes_or_no.choose() == 'no':
             sys.exit()
+        check_gitignore()
         run(f'{Data.git_path} init')
         config_path.parent.mkdir(
             parents=True,
@@ -110,7 +111,6 @@ def git_init():
         check_git()
         check_username()
         check_email()
-        check_gitignore()
         if run(
             f'{Data.git_path} config --global credential.helper'
         ) != 'store':
