@@ -358,7 +358,7 @@ class Data:
     branch = None
     remote = 'origin'
     commit_message = 'aboba'
-    config = None
+    config = {}
     options_list = [
         {
             'args': (
@@ -425,5 +425,6 @@ def main():
         Data.branch = select_branch()
     run(f'git branch -m {Data.branch}')
     os.system(f'git push --set-upstream {Data.remote} {Data.branch}')
+
 
 main()
