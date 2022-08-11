@@ -47,7 +47,10 @@ f'''\
 
 def parse(
     options_list,
-    **kwargs
+    other_expected_args = [
+        'portable'
+    ],
+    **kwargs,
 ):
     class BadArgumentError(Exception):
         pass
@@ -75,7 +78,7 @@ def parse(
             continue
         if len(arg) == 1:
             raise BadArgumentError(
-                f'argument "{arg}" unexcepted'
+                f'argument "{arg}" unexcepted, maybe you mean "-{arg}"?'
             )
         elif arg[:2] == '--':
             check_arg(arg)
@@ -83,6 +86,7 @@ def parse(
             for char in arg:
                 check_arg('-' + char)
         else:
-            raise BadArgumentError(
-                f'argument "{arg}" unexcepted'
-            )
+            if arg not in other_expected_args:
+                raise BadArgumentError(
+                    f'argument "{arg}" unexcepted'
+                )

@@ -6,7 +6,7 @@ build-backend = "hatchling.build"
 dependencies = [
   "rich",
   "pynput",
-  "pyyaml"
+  "pyyaml",
 ]
 name = "PrettyGit"
 version = "22.0.5"
