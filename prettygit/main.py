@@ -377,7 +377,7 @@ class Data:
             ),
             'info':
                 'show this message',
-            'example':
+            'examples':
                 'easygit --help',
             'run':
                 options.get_help,
@@ -390,7 +390,7 @@ class Data:
             ),
             'info':
                 'set branch for pushing',
-            'example':
+            'examples':
                 'easygit --branch main',
             'run':
                 set_branch,
@@ -403,7 +403,7 @@ class Data:
             ),
             'info':
                 'set remote for pushing',
-            'example':
+            'examples':
                 'easygit --remote origin',
             'run':
                 set_remote,
@@ -416,7 +416,7 @@ class Data:
             ),
             'info':
                 'set commit message',
-            'example':
+            'examples':
                 'easygit --commit_message aboba',
             'run':
                 set_commit_message,
@@ -429,9 +429,10 @@ class Data:
             ),
             'info':
                 'set path for git',
-            'example':
-                '\neasygit --git_path /bin/git'
-                '\neasygit --git_path D:\\git\\git.exe',
+            'examples': [
+                'easygit --git_path /bin/git',
+                'easygit --git_path D:\\\\git\\\\git.exe',
+            ],
             'run':
                 set_git_path,
             'skip_next': True

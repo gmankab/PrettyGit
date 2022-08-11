@@ -35,12 +35,19 @@ def get_help(
     table.add_column()
 
     for option in options_list:
+        if isinstance(
+            option['examples'],
+            str
+        ):
+            option['examples'] = [option['examples']]
         table.add_row(
 f'''\
-[light_slate_blue]   args:  [white]{'  '.join(option['args'])}
-[light_slate_blue]   info:  [purple]{option['info']}
-[light_slate_blue]example:  [medium_purple2]{option['example']}\
+[light_slate_blue]    args:  [white]{'  '.join(option['args'])}
+[light_slate_blue]    info:  [purple]{option['info']}
+[light_slate_blue]examples:  [medium_purple2]\
+{(" " * 11).join(option['example'])}
 ''',
+
             end_section = True
         )
     print(table)

@@ -59,20 +59,6 @@ except ImportError as error_text:
     if 'No module named pip' in upgrade_pip:
         print('downloading pip')
         # pip is a shit which allow to install libs, so if we want to install libs we must have pip
-        py_dir = Path(sys.executable).parent
-
-        # fixing shit which doesn't allow to install pip in python embeddable on windows:
-        for file in os.listdir(
-            py_dir
-        ):
-            if file[-5:] == '._pth':
-                with open(
-                    f'{py_dir}/{file}', 'r+'
-                ) as file:
-                    if '#import site' in file.readlines()[-1]:
-                        file.write('import site')
-
-        # downloading pip
         get_pip = f'{proj_path}/get-pip.py'
         get_pip_tmp = f'{proj_path}/get-pip.tmp'
         r.urlretrieve(
