@@ -21,7 +21,8 @@ if portable:
 try:
     import prettygit
     sys.exit()
-except ImportError:
+except ImportError as error_text:
+    print(error_text)
     def run(
         command: str
     ) -> str:
@@ -104,6 +105,14 @@ except ImportError:
         )
     else:
         os.system(f'{pip} install {proj_name}')
+
+    for file_name in os.listdir(proj_path):
+        if (
+            len(file_name) > 10
+         ) and (
+            file_name[-10:] == '.dist-info'
+         ):
+            print(f'{proj_path}/{file_name}')
 
     command = f'{sys.executable} {Path(__file__)}'
     if portable:

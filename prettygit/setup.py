@@ -1,6 +1,7 @@
 from pathlib import Path
 import platform
-import selection
+import sys
+from prettygit import selection
 import shutil as sh
 
 project_path = Path(__file__).parent.resolve()
@@ -47,3 +48,5 @@ def windows():
 
 
 main()
+
+# sys.exit()
