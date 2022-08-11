@@ -93,7 +93,7 @@ def git_init():
         print(f'try init git in [blue]{proj_dir}[/blue]?')
         if yes_or_no.choose() == 'no':
             sys.exit()
-        run('git init')
+        run(f'{Data.git_path} init')
         config_path.parent.mkdir(
             parents=True,
             exist_ok=True,
@@ -112,10 +112,10 @@ def git_init():
         check_email()
         check_gitignore()
         if run(
-            'git config --global credential.helper'
+            f'{Data.git_path} config --global credential.helper'
         ) != 'store':
             run(
-                'git config --global credential.helper store'
+                f'{Data.git_path} config --global credential.helper store'
             )
 
 
@@ -125,6 +125,15 @@ def run(
     return run_st(
         command
     )[-1]
+
+
+def set_git_path(
+    *_,
+    arg_pos,
+    **__,
+):
+    Data.git_path = sys.argv[arg_pos + 1]
+    print(f'set git path "{Data.git_path}"')
 
 
 def set_branch(
@@ -156,7 +165,7 @@ def set_commit_message(
 
 def check_username():
     if not run(
-        'git config --global user.name'
+        f'{Data.git_path} config --global user.name'
     ):
         username = run('echo "$USER"')
 
@@ -166,7 +175,7 @@ def check_username():
             )
 
             if yes_or_no.choose() == 'yes':
-                run(f'git config --global user.name {username}')
+                run(f'{Data.git_path} config --global user.name {username}')
                 print(f'[green]set git username [blue]"{username}"')
                 break
 
@@ -178,7 +187,7 @@ def check_username():
 
 def check_email():
     if not run(
-        'git config --global user.email'
+        f'{Data.git_path} config --global user.email'
     ):
         text = '[green]input new email for git:'
         while True:
@@ -187,14 +196,14 @@ def check_email():
                 f'use email "{email}" for git?'
             )
             if yes_or_no.choose() == 'yes':
-                run(f'git config --global user.email {email}')
+                run(f'{Data.git_path} config --global user.email {email}')
                 print(f'[green]set git email [blue]"{email}"')
                 break
 
 
 def check_git():
     if run(
-        'git -v'
+        f'{Data.git_path} -v'
     ).split()[0] != 'git':
         print('[red]git is not installed, please install it')
         exit()
@@ -248,14 +257,14 @@ After creating repo input link here:\
         )
 
         if yes_or_no.choose() == 'yes':
-            run(f'git remote add {remote_name} {url}')
+            run(f'{Data.git_path} remote add {remote_name} {url}')
             print('[green]your git remotes:')
             git_remotes = {}
             for remote in run(
-                'git remote'
+                f'{Data.git_path} remote'
             ).split():
                 git_remotes[remote] = run(
-                    f'git remote get-url {remote}'
+                    f'{Data.git_path} remote get-url {remote}'
                 )
             for key, val in git_remotes.items():
                 print(f'{key}: [deep_sky_blue1]{val}')
@@ -269,7 +278,7 @@ def check_remote(
     if not remote_name:
         remote_name = Data.remote
     if run(
-        f'git remote get-url {remote_name}'
+        f'{Data.git_path} remote get-url {remote_name}'
     ).split()[0] == 'error:':
         add_remote(
             remote_name
@@ -358,6 +367,7 @@ class Data:
     branch = None
     remote = 'origin'
     commit_message = 'aboba'
+    git_path = "git"
     config = {}
     options_list = [
         {
@@ -412,6 +422,20 @@ class Data:
                 set_commit_message,
             'skip_next': True
         },
+        {
+            'args': (
+                '-g',
+                '--git_path'
+            ),
+            'info':
+                'set path for git',
+            'example':
+                '\neasygit --git_path /bin/git'
+                '\neasygit --git_path D:\\git\\git.exe',
+            'run':
+                set_git_path,
+            'skip_next': True
+        },
     ]
 
 
@@ -419,12 +443,12 @@ def main():
     check_gitignore()
     options.parse(Data.options_list)
     git_init()
-    os.system('git add --all')
-    os.system(f'git commit -m "{Data.commit_message}"')
+    os.system(f'{Data.git_path} add --all')
+    os.system(f'{Data.git_path} commit -m "{Data.commit_message}"')
     if not Data.branch:
         Data.branch = select_branch()
-    run(f'git branch -m {Data.branch}')
-    os.system(f'git push --set-upstream {Data.remote} {Data.branch}')
+    run(f'{Data.git_path} branch -m {Data.branch}')
+    os.system(f'{Data.git_path} push --set-upstream {Data.remote} {Data.branch}')
 
 
 main()

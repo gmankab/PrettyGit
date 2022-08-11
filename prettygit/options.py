@@ -19,11 +19,13 @@ def get_help(
     options_list,
     **__
 ):
-    console.rule(
-        '[bold blue]Options',
-        style = 'green',
-        characters = '━'
-    )
+    def rule():
+        console.rule(
+            '[bold blue]Help',
+            style = 'green',
+            characters = '━'
+        )
+    rule()
     table = rich.table.Table(
         show_header = False,
         show_edge = False,
@@ -42,6 +44,7 @@ f'''\
             end_section = True
         )
     print(table)
+    rule()
     exit()
 
 
