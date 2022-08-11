@@ -20,7 +20,8 @@ if portable:
 try:
     import prettygit
     sys.exit()
-except ImportError:
+except ImportError as error_text:
+    print(error_text)
     def run(
         command: str
     ) -> str:
