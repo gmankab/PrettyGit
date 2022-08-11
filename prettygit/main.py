@@ -7,11 +7,12 @@ license - gnu gpl 3
 https://gnu.org/licenses/gpl-3.0.en.html
 '''
 
-from rich import traceback
-from pynput import keyboard
-import subprocess
 from prettygit.selection import Selection
 from prettygit import options
+from pynput import keyboard
+from rich import traceback
+from rich import print
+import subprocess
 import rich
 import time
 import yaml
@@ -25,8 +26,6 @@ traceback.install(show_locals=True)
 
 from prettygit import setup
 
-c = rich.console.Console()
-print = c.print
 Key = keyboard.Key
 proj_dir = os.getcwd()
 config_path = Path(f'{proj_dir}/.git/easygit.yml')

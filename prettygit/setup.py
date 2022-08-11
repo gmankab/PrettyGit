@@ -1,11 +1,13 @@
+from rich import traceback
 from pathlib import Path
+from rich import print
 import shutil as sh
 import platform
 import sys
 import os
 
-version = '22.7'
 
+version = '22.0.8'
 proj_path = Path(__file__).parent.resolve()
 icon_ico_source = f'{proj_path}/icon.ico'
 if 'portable' in sys.argv:
