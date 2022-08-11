@@ -1,7 +1,7 @@
 from urllib import request as r
 from pathlib import Path
+import shutil as sh
 import subprocess
-import shutil
 import sys
 import os
 
@@ -99,7 +99,7 @@ except ImportError as error_text:
 
     if portable:
         os.system(f'{pip} install {proj_name} -t {proj_path} --cache-dir {pip_cache_path}')
-        shutil.rmtree(
+        sh.rmtree(
             pip_cache_path,
             ignore_errors=True
         )
@@ -109,14 +109,14 @@ except ImportError as error_text:
     for file_name in os.listdir(proj_path):
         if (
             len(file_name) > 10
-         ) and (
+        ) and (
             file_name[-10:] == '.dist-info'
-         ):
-            print(f'{proj_path}/{file_name}')
+        ):
+            sh.rmtree(
+                f'{proj_path}/{file_name}',
+                ignore_errors=True,
+            )
 
-    command = f'{sys.executable} {Path(__file__)}'
-    if portable:
-        command += ' portable'
     os.system(
-        command
+        sys.executable + " ".join(sys.path)
     )
