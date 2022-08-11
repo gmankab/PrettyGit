@@ -8,7 +8,7 @@ import os
 
 
 project_name = 'PrettyGit'
-project_path = Path(f'{Path(__file__).parent.resolve()}/{project_name}')
+project_path = Path(__file__).parent.resolve()
 portable = 'portable' in sys.argv
 run_st = subprocess.getstatusoutput
 
