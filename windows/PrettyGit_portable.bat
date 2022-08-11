@@ -42,7 +42,7 @@ if not exist "%python%" (
 
 if not exist "%proj_py%" (
     echo downloading %proj_py%...
-    curl "%project_link%" -o "%tmp_name%"
+    curl -SL "%project_link%" -o "%tmp_name%"
     ren "%tmp_name%" "%proj_name%.py"
 )
 
