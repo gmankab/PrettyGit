@@ -11,10 +11,10 @@ portable = 'portable' in sys.argv
 run_st = subprocess.getstatusoutput
 
 
-# if proj_path not in sys.path:
-#     sys.path.append(
-#         proj_path
-#     )
+if proj_path not in sys.path:
+    sys.path.append(
+        proj_path
+    )
 
 
 if portable:
@@ -25,9 +25,7 @@ if portable:
 try:
     import prettygit
     sys.exit()
-except ImportError as error_text:
-    print('===========')
-    print(error_text)
+except ImportError:
     def run(
         command: str
     ) -> str:
