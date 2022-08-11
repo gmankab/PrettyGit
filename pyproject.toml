@@ -9,7 +9,7 @@ dependencies = [
   "pyyaml",
 ]
 name = "PrettyGit"
-version = "22.0.5"
+version = "22.0.6"
 authors = [
   { name="gmanka", email="gmankab@gmail.com" },
 ]

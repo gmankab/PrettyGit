@@ -4,6 +4,8 @@ import platform
 import sys
 import os
 
+version = '22.6'
+
 proj_path = Path(__file__).parent.resolve()
 icon_ico_source = f'{proj_path}/icon.ico'
 if 'portable' in sys.argv:
