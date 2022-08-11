@@ -37,16 +37,21 @@ except ImportError:
     def progress(
         block_num,
         block_size,
-        total_size
+        total_size,
     ):
-        global downloading_progress
-        new_progress = block_num * block_size // total_size * 100
-        if new_progress != downloading_progress:
-            new_progress = downloading_progress
-            print(
-                f'\r{new_progress}%',
-                end = '',
-            )
+        # global downloading_progress
+        # new_progress = block_num * block_size // total_size * 100
+        # if new_progress != downloading_progress:
+        #     new_progress = downloading_progress
+        #     print(
+        #         f'\r{new_progress}%',
+        #         end = '',
+        #     )
+        print()
+        print(f'block_num = {block_num}')
+        print(f'block_size = {block_size}')
+        print(f'total_size = {total_size}')
+        print()
 
     pip = f'{sys.executable} -m pip'
     upgrade_pip = run(f'{pip} install --upgrade pip')
