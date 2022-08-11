@@ -10,8 +10,8 @@ https://gnu.org/licenses/gpl-3.0.en.html
 from rich import traceback
 from pynput import keyboard
 import subprocess
-from selection import Selection
-import options
+from prettygit.selection import Selection
+from prettygit import options
 import rich
 import time
 import yaml
@@ -22,6 +22,9 @@ from dataclasses import dataclass
 
 rich.pretty.install()
 traceback.install(show_locals=True)
+
+from prettygit import setup
+
 c = rich.console.Console()
 print = c.print
 Key = keyboard.Key
@@ -87,6 +90,9 @@ def git_init():
             config_path
         )
     else:
+        print(f'try init git in [blue]{proj_dir}[/blue]?')
+        if yes_or_no.choose() == 'no':
+            sys.exit()
         run('git init')
         config_path.parent.mkdir(
             parents=True,

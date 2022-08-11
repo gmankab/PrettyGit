@@ -4,8 +4,8 @@ import rich
 from rich import pretty
 from rich.console import Console
 from pynput import keyboard
+from prettygit import selection
 import subprocess
-import selection
 import sys
 
 pretty.install()

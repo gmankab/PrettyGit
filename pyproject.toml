@@ -3,18 +3,22 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
+dependencies = [
+  "rich",
+  "pynput",
+  "pyyaml"
+]
 name = "PrettyGit"
-version = "22.0.0"
+version = "22.0.3"
 authors = [
   { name="gmanka", email="gmankab@gmail.com" },
 ]
 description = "very simple and user friendly interface for git"
 readme = "readme.md"
-license = { file="readme.md" }
 requires-python = ">=3.10"
 classifiers = [
     "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: gnu gpl 3 https://gnu.org/licenses/gpl-3.0.en.html",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
     "Operating System :: OS Independent",
 ]
 

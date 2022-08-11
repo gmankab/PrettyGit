@@ -1,0 +1,10 @@
+[Desktop Entry]
+Comment=very simple and user friendly interface for git
+Type=Application
+Icon=PrettyGit
+Name=PrettyGit
+Terminal=true
+TerminalOptions=\s--noclose
+Hidden=false
+Keywords=pretty;git
+Exec=/bin/python -m prettygit

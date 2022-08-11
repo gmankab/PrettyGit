@@ -1,3 +1,4 @@
 #!/bin/bash
-python src/__init__.py
+python prettygit
 # python test.py
+# bash build.sh
