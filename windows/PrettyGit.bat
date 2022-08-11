@@ -16,7 +16,7 @@ set python_link=https://python.org/ftp/python/%python_version%/python-%python_ve
 
 if not exist "%proj_path%" (
     echo %proj_name% supports only latest versions of windows 10 and 11
-    echo if errors occur, update windows
+    echo if errors occur, please update windows
     pause
     mkdir "%proj_path%"
 )

@@ -6,6 +6,8 @@ import os
 
 proj_path = Path(__file__).parent.resolve()
 icon_ico_source = f'{proj_path}/icon.ico'
+if 'portable' in sys.argv:
+    portable = True
 
 
 def main():
@@ -84,6 +86,7 @@ def windows():
     )
 
     shortcut_creator_path = f'{proj_path}/shortcut_creator.vbs'
+
     with open(
         shortcut_creator_path,
         'w'
@@ -93,7 +96,7 @@ f'''\
 set WshShell = WScript.CreateObject("WScript.Shell")
 set Shortcut = WshShell.CreateShortcut("{shortcut}")
 Shortcut.TargetPath = "{sys.executable}"
-Shortcut.Arguments = "{proj_path}"
+Shortcut.Arguments = "-m prettygit {'portable' if portable else ""}"
 Shortcut.IconLocation = "{icon}"
 Shortcut.Save
 '''
@@ -103,6 +106,16 @@ Shortcut.Save
     os.remove(shortcut_creator_path)
     sh.copyfile(shortcut, desktop)
     sh.copyfile(shortcut, start_menu)
+    print('[green]created scortcuts on desktop and start panel')
+    print(
+f'''
+[green]this script can be runned with following commands:
+[blue]{sys.executable} -m prettygit
+{shortcut}
+{start_menu}
+{desktop}\
+'''
+    )
 
 
 main()
