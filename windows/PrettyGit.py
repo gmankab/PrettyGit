@@ -9,6 +9,7 @@ proj_name = 'PrettyGit'
 proj_path = Path(__file__).parent.resolve()
 portable = 'portable' in sys.argv
 run_st = subprocess.getstatusoutput
+downloading_progress = 0
 
 
 if proj_path not in sys.path:
@@ -33,12 +34,25 @@ except ImportError:
             command
         )[-1]
 
+    def progress(
+        block_num,
+        block_size,
+        total_size
+    ):
+        global downloading_progress
+        new_progress = block_num * block_size // total_size * 100
+        if new_progress != downloading_progress:
+            new_progress = downloading_progress
+            print(
+                f'\r{new_progress}%',
+                end = '',
+            )
 
     pip = f'{sys.executable} -m pip'
     upgrade_pip = run(f'{pip} install --upgrade pip')
 
     if 'No module named pip' in upgrade_pip:
-        print('installing pip...')
+        print('installing pip')
         # pip is a shit which allow to install libs, so if we want to install libs we must have pip
         py_dir = Path(sys.executable).parent
 
@@ -55,14 +69,18 @@ except ImportError:
 
         # installing pip:
         get_pip = f'{proj_path}/get-pip.py'
+        get_pip_tmp = f'{proj_path}/get-pip.tmp'
 
         r.urlretrieve(
             url = 'https://bootstrap.pypa.io/get-pip.py',
-            filename = get_pip,
+            filename = get_pip_tmp,
+            reporthook = progress,
         )
+
+        Path(get_pip_tmp).rename(get_pip)
+
         os.system(f'{sys.executable} {get_pip} --no-warn-script-location')
         os.remove(get_pip)
-        os.remove(proj_path)
     else:
         print(upgrade_pip)
 

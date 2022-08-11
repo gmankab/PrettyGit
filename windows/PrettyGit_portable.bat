@@ -29,11 +29,11 @@ if not exist "%python_dir%" (
 
 if not exist "%python%" (
     if not exist "%python_zip%" (
-        echo downloading python %python_version% from %python_link%...
+        echo downloading python %python_version% from %python_link%
         curl -SL "%python_link%" -o "%python_tmp%"
         ren "%python_tmp%" "python.zip"
     )
-    echo unzipping python %python_version%...
+    echo unzipping python %python_version%
     cd "%python_dir%"
     tar -xf "%python_zip%"
     cd "%cwd%"
@@ -41,7 +41,7 @@ if not exist "%python%" (
 
 
 if not exist "%proj_py%" (
-    echo downloading %proj_py%...
+    echo downloading %proj_py% from "%project_link%"
     curl -SL "%project_link%" -o "%tmp_name%"
     ren "%tmp_name%" "%proj_name%.py"
 )
