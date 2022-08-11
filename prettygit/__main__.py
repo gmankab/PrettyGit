@@ -3,8 +3,11 @@
 import sys
 from pathlib import Path
 
-sys.path.append(
-    str(Path(__file__).parent.parent.resolve())
-)
+proj_path = str(Path(__file__).parent.parent.resolve())
+
+if proj_path not in sys.path:
+    sys.path.append(
+        proj_path
+    )
 
 import prettygit

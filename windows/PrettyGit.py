@@ -5,22 +5,28 @@ import shutil
 import sys
 import os
 
-
-
-project_name = 'PrettyGit'
-project_path = Path(__file__).parent.resolve()
+proj_name = 'PrettyGit'
+proj_path = Path(__file__).parent.resolve()
 portable = 'portable' in sys.argv
 run_st = subprocess.getstatusoutput
 
+
+# if proj_path not in sys.path:
+#     sys.path.append(
+#         proj_path
+#     )
+
+
 if portable:
     sys.path.append(
-        project_path
+        proj_path
     )
 
 try:
     import prettygit
     sys.exit()
 except ImportError as error_text:
+    print('===========')
     print(error_text)
     def run(
         command: str
@@ -50,7 +56,7 @@ except ImportError as error_text:
                         file.write('import site')
 
         # installing pip:
-        get_pip = f'{project_path}/get-pip.py'
+        get_pip = f'{proj_path}/get-pip.py'
 
         r.urlretrieve(
             url = 'https://bootstrap.pypa.io/get-pip.py',
@@ -58,19 +64,19 @@ except ImportError as error_text:
         )
         os.system(f'{sys.executable} {get_pip} --no-warn-script-location')
         os.remove(get_pip)
-        os.remove(project_path)
+        os.remove(proj_path)
     else:
         print(upgrade_pip)
 
     os.system(f'{pip} config set global.no-warn-script-location true')
 
     if portable:
-        pip_cache = f'{project_path}/pip_cache'
-        pip_cache_path = f'{project_path}/pip_cache'
-        os.system(f'{pip} install {project_name} -t {project_path} --cache-dir {pip_cache}')
+        pip_cache = f'{proj_path}/pip_cache'
+        pip_cache_path = f'{proj_path}/pip_cache'
+        os.system(f'{pip} install {proj_name} -t {proj_path} --cache-dir {pip_cache}')
         shutil.rmtree(pip_cache)
     else:
-        os.system(f'{pip} install {project_name}')
+        os.system(f'{pip} install {proj_name}')
 
     command = f'{sys.executable} {Path(__file__)}'
     if portable:
