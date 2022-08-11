@@ -7,21 +7,16 @@ import os
 
 proj_name = 'PrettyGit'
 proj_path = Path(__file__).parent.resolve()
-portable = 'portable' in sys.argv
 run_st = subprocess.getstatusoutput
-downloading_progress = 0
-
-
-if proj_path not in sys.path:
-    sys.path.append(
-        proj_path
-    )
+portable = 'portable' in sys.argv
 
 
 if portable:
-    sys.path.append(
-        proj_path
-    )
+    if str(proj_path) not in sys.path:
+        sys.path.append(
+            str(proj_path)
+        )
+
 
 try:
     import prettygit
@@ -34,34 +29,36 @@ except ImportError:
             command
         )[-1]
 
+    downloading_progress = 0
     def progress(
         block_num,
         block_size,
         total_size,
     ):
-        # global downloading_progress
-        # new_progress = block_num * block_size // total_size * 100
-        # if new_progress != downloading_progress:
-        #     new_progress = downloading_progress
-        #     print(
-        #         f'\r{new_progress}%',
-        #         end = '',
-        #     )
-        print()
-        print(f'block_num = {block_num}')
-        print(f'block_size = {block_size}')
-        print(f'total_size = {total_size}')
-        print()
+        global downloading_progress
+        new_progress = round(
+            block_num * block_size / total_size * 100
+        )
+        if new_progress != downloading_progress:
+            downloading_progress = new_progress
+            print(
+                f'\r{new_progress}%',
+                end = '',
+            )
 
     pip = f'{sys.executable} -m pip'
-    upgrade_pip = run(f'{pip} install --upgrade pip')
+    if portable:
+        pip_cache_path = f'{proj_path}/pip_cache'
+        upgrade_pip = run(f'{pip} install --upgrade pip --cache-dir {pip_cache_path}')
+    else:
+        upgrade_pip = run(f'{pip} install --upgrade pip')
 
     if 'No module named pip' in upgrade_pip:
-        print('installing pip')
+        print('downloading pip')
         # pip is a shit which allow to install libs, so if we want to install libs we must have pip
         py_dir = Path(sys.executable).parent
 
-        # fixing shit which doesn't allow to install pip in python embeddable in windows:
+        # fixing shit which doesn't allow to install pip in python embeddable on windows:
         for file in os.listdir(
             py_dir
         ):
@@ -72,30 +69,39 @@ except ImportError:
                     if '#import site' in file.readlines()[-1]:
                         file.write('import site')
 
-        # installing pip:
+        # downloading pip
         get_pip = f'{proj_path}/get-pip.py'
         get_pip_tmp = f'{proj_path}/get-pip.tmp'
-
         r.urlretrieve(
             url = 'https://bootstrap.pypa.io/get-pip.py',
             filename = get_pip_tmp,
             reporthook = progress,
         )
-
+        print()
         Path(get_pip_tmp).rename(get_pip)
 
-        os.system(f'{sys.executable} {get_pip} --no-warn-script-location')
+        print('Preparing to install pip')
+        if portable:
+            os.system(
+                f'{sys.executable} {get_pip} --no-warn-script-location --cache-dir {pip_cache_path}'
+            )
+        else:
+            os.system(
+                f'{sys.executable} {get_pip} --no-warn-script-location'
+            )
         os.remove(get_pip)
+        print('succesfully installed pip')
     else:
         print(upgrade_pip)
 
     os.system(f'{pip} config set global.no-warn-script-location true')
 
     if portable:
-        pip_cache = f'{proj_path}/pip_cache'
-        pip_cache_path = f'{proj_path}/pip_cache'
-        os.system(f'{pip} install {proj_name} -t {proj_path} --cache-dir {pip_cache}')
-        shutil.rmtree(pip_cache)
+        os.system(f'{pip} install {proj_name} -t {proj_path} --cache-dir {pip_cache_path}')
+        shutil.rmtree(
+            pip_cache_path,
+            ignore_errors=True
+        )
     else:
         os.system(f'{pip} install {proj_name}')
 
