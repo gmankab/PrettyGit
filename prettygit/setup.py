@@ -103,15 +103,6 @@ Shortcut.Save
     os.remove(shortcut_creator_path)
     sh.copyfile(shortcut, desktop)
     sh.copyfile(shortcut, start_menu)
-    # try:
-    #     sh.copyfile(shortcut, desktop)
-    # except PermissionError:
-    #     pass
-    # try:
-    # except PermissionError:
-    #     pass
 
 
 main()
-
-# sys.exit()
