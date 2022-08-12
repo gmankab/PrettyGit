@@ -446,7 +446,7 @@ def get_help(
 
     for option in options_list:
         text = f'''\
-[light_slate_blue]    args:  [white]{'  '.join(option['args'])}
+[light_slate_blue]    args:  [white]{' | '.join(option['args'])}
 [light_slate_blue]    info:  [purple]{option['info']}
 '''
         if isinstance(
@@ -480,12 +480,7 @@ def parse_args(
         index += 1
 
         match arg:
-            case any(
-                'h',
-                '-h',
-                'help',
-                '--help'
-            ):
+            case 'h' | '-h' | 'help' | '--help':
                 get_help(
                     options_list = Data.options_list
                 )
