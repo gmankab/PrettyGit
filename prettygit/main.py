@@ -11,7 +11,6 @@ from rich import traceback
 from pynput import keyboard
 import subprocess
 from prettygit.selection import Selection
-from prettygit import options
 import rich
 import time
 import yaml
@@ -23,7 +22,7 @@ from dataclasses import dataclass
 rich.pretty.install()
 traceback.install(show_locals=True)
 
-from prettygit import setup
+from prettygit.setup import version
 
 c = rich.console.Console()
 print = c.print
@@ -203,7 +202,7 @@ def check_email():
 
 def check_git():
     if run(
-        f'{Data.git_path} -v'
+        f'{Data.git_path} --version'
     ).split()[0] != 'git':
         print('[red]git is not installed, please install it')
         exit()
@@ -379,9 +378,6 @@ class Data:
                 'show this message',
             'examples':
                 'easygit --help',
-            'run':
-                options.get_help,
-            'skip_next': False
         },
         {
             'args': (
@@ -392,9 +388,6 @@ class Data:
                 'set branch for pushing',
             'examples':
                 'easygit --branch main',
-            'run':
-                set_branch,
-            'skip_next': True
         },
         {
             'args': (
@@ -405,9 +398,6 @@ class Data:
                 'set remote for pushing',
             'examples':
                 'easygit --remote origin',
-            'run':
-                set_remote,
-            'skip_next': True
         },
         {
             'args': (
@@ -418,9 +408,6 @@ class Data:
                 'set commit message',
             'examples':
                 'easygit --commit_message aboba',
-            'run':
-                set_commit_message,
-            'skip_next': True
         },
         {
             'args': (
@@ -433,16 +420,82 @@ class Data:
                 'easygit --git_path /bin/git',
                 'easygit --git_path D:\\\\git\\\\git.exe',
             ],
-            'run':
-                set_git_path,
-            'skip_next': True
         },
     ]
 
 
+def get_help(
+    *_,
+    options_list,
+    **__
+):
+    def rule():
+        c.rule(
+            '[bold blue]Help',
+            style = 'green',
+            characters = '━'
+        )
+    rule()
+    table = rich.table.Table(
+        show_header = False,
+        show_edge = False,
+        expand = True,
+        border_style = 'blue',
+    )
+    table.add_column()
+
+    for option in options_list:
+        text = f'''\
+[light_slate_blue]    args:  [white]{'  '.join(option['args'])}
+[light_slate_blue]    info:  [purple]{option['info']}
+'''
+        if isinstance(
+            option['examples'],
+            list
+        ):
+            text += '[light_slate_blue]examples:  [medium_purple2]'
+            text += ("\n" + " " * 11).join(option['examples'])
+        else:
+            text += (
+f'[light_slate_blue] example:  [medium_purple2]{option["examples"]}'
+            )
+        table.add_row(
+            text,
+            end_section = True,
+        )
+    print(table)
+    print(f'[green] PrettyGit v{version}')
+    rule()
+    exit()
+
+
+def parse_args(
+    options_list,
+):
+    class BadArgumentError(Exception):
+        pass
+
+    index = 1
+    for arg in sys.argv[1:]:
+        index += 1
+
+        match arg:
+            case any(
+                'h',
+                '-h',
+                'help',
+                '--help'
+            ):
+                get_help(
+                    options_list = Data.options_list
+                )
+            case _:
+                pass
+
+
 def main():
     check_gitignore()
-    options.parse(Data.options_list)
+    parse_args(Data.options_list)
     git_init()
     os.system(f'{Data.git_path} add --all')
     os.system(f'{Data.git_path} commit -m "{Data.commit_message}"')

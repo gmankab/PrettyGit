@@ -93,20 +93,20 @@ except ImportError as error_text:
                 f'{sys.executable} {get_pip} --no-warn-script-location'
             )
         os.remove(get_pip)
-        print('succesfully installed pip')
+        print('successfully installed pip')
     else:
         print(upgrade_pip)
 
     os.system(f'{pip} config set global.no-warn-script-location true')
 
     if portable:
-        os.system(f'{pip} install {proj_name} -t {proj_path} --cache-dir {pip_cache_path}')
+        os.system(f'{pip} install --upgrade {proj_name} -t {proj_path} --cache-dir {pip_cache_path}')
         sh.rmtree(
             pip_cache_path,
             ignore_errors=True
         )
     else:
-        os.system(f'{pip} install {proj_name}')
+        os.system(f'{pip} install --upgrade {proj_name}')
 
     for file_name in os.listdir(proj_path):
         if (

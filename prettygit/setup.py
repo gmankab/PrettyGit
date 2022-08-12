@@ -12,8 +12,7 @@ proj_path = Path(__file__).parent.resolve()
 icon_ico_source = f'{proj_path}/icon.ico'
 c = rich.console.Console()
 print = c.print
-if 'portable' in sys.argv:
-    portable = True
+portable = 'portable' in sys.argv
 
 
 def main():
@@ -28,16 +27,17 @@ def linux():
     share = f'{home}/.local/share'
 
     dotdesktop_path = Path(f'{home}/.local/share/applications/PrettyGit.desktop')
-    if not dotdesktop_path.exists():
-        dotdesktop_path.parent.mkdir(
-            parents=True,
-            exist_ok=True
-        )
-        with open(
-            dotdesktop_path,
-            'w',
-        ) as dotdesktop:
-            dotdesktop.write(
+    if dotdesktop_path.exists():
+        return
+    dotdesktop_path.parent.mkdir(
+        parents=True,
+        exist_ok=True
+    )
+    with open(
+        dotdesktop_path,
+        'w',
+    ) as dotdesktop:
+        dotdesktop.write(
 '''\
 [Desktop Entry]
 Comment=very simple and user friendly interface for git
@@ -50,18 +50,29 @@ Hidden=false
 Keywords=pretty;git
 Exec=/bin/python -m prettygit
 '''
-            )
+        )
 
     icon_path = Path(f'{share}/icons/PrettyGit.svg')
-    if not icon_path.exists():
-        icon_path.parent.mkdir(
-            parents=True,
-            exist_ok=True
-        )
-        sh.copy(
-            f'{proj_path}/icon.svg',
-            f'{share}/icons/PrettyGit.svg',
-        )
+    icon_path.parent.mkdir(
+        parents=True,
+        exist_ok=True
+    )
+    sh.copy(
+        f'{proj_path}/icon.svg',
+        f'{share}/icons/PrettyGit.svg',
+    )
+
+    print(
+f'''
+[green]\
+created file [deep_sky_blue1]{dotdesktop_path}
+
+[green]\
+this script can be runned with following commands:
+[deep_sky_blue1]\
+{sys.executable} -m easygit
+'''
+    )
 
 
 def windows():
@@ -112,15 +123,21 @@ Shortcut.Save
     os.remove(shortcut_creator_path)
     sh.copyfile(shortcut, desktop,)
     sh.copyfile(shortcut, start_menu)
-    print('[green]created scortcuts on desktop and start panel')
-    print(
-f'''
-[green]this script can be runned with following commands:
+    text = f'''
+[green]\
+created shortcuts on desktop and start panel
+
+this script can be runned with following commands:
 [deep_sky_blue1]\
 {sys.executable} {proj_path}
 {shortcut}
 {desktop}
-''', highlight=False
+'''
+    if not portable:
+        text += f'{sys.executable} -m prettygit\n'
+    print(
+        text,
+        highlight=False,
     )
 
 
