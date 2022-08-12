@@ -165,11 +165,35 @@ def check_email():
 
 
 def check_git():
-    if run(
-        f'{Data.git_path} --version'
-    ).split()[0] != 'git':
-        print('[red]git is not installed, please install it')
-        exit()
+    selection = Selection(
+        items = [
+            'try again',
+            'input path',
+            'exit,'
+        ],
+        styles = [
+            'green',
+            'blue',
+            'red',
+        ],
+    )
+    while True:
+        if run(
+            f'{Data.git_path} --version'
+        ).split()[0] == 'git':
+            return
+        else:
+            if Data.git_path == 'git':
+                print('[red]can\'t find git on this computer')
+            else:
+                print(f'[red]can\'t find git on this path - "{Data.git_path}"')
+            answer = selection.choose()
+            match answer:
+                case 'exit':
+                    exit()
+                case 'input path':
+                    print('[blue]please input path for git:')
+                    Data.git_path = input()
 
 
 def inp(
@@ -330,7 +354,7 @@ class Data:
     branch = None
     remote = 'origin'
     commit_message = 'aboba'
-    git_path = "git"
+    git_path = "git1"
     config = {}
     options_list = [
         {

@@ -18,23 +18,23 @@ class Selection:
         self,
         items: list | tuple,
         styles: list | tuple = [],
-        choosen: int = 0,
+        chosen: int = 0,
     ) -> None:
         self.items = items
-        self.choosen = choosen
+        self.chosen = chosen
         self.len = len(items)
         if not styles:
             styles = [None] * len(self.items)
         self.styles = styles
 
     def print(self):
-        if self.choosen < 0:
-            self.choosen = self.len - 1
-        elif self.choosen >= self.len:
-            self.choosen = 0
+        if self.chosen < 0:
+            self.chosen = self.len - 1
+        elif self.chosen >= self.len:
+            self.chosen = 0
         print()
         for index, item in enumerate(self.items):
-            if index == self.choosen:
+            if index == self.chosen:
                 item = f'[blue]➜[/blue]  [reverse]{item}[/reverse]'
             else:
                 item = f'    {item}'
@@ -60,14 +60,14 @@ class Selection:
         def on_press(pressed_key):
             match pressed_key:
                 case Key.esc:
-                    self.choosen = None
+                    self.chosen = None
                     return False
                 case Key.enter:
                     return False
                 case Key.up:
-                    self.choosen -= 1
+                    self.chosen -= 1
                 case Key.down:
-                    self.choosen += 1
+                    self.chosen += 1
             self.update()
 
         run('stty -echo')
@@ -79,7 +79,7 @@ class Selection:
         input()
         run('stty echo')
 
-        if self.choosen is None:
+        if self.chosen is None:
             return None
         else:
-            return self.items[self.choosen]
+            return self.items[self.chosen]
