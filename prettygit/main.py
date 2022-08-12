@@ -126,42 +126,6 @@ def run(
     )[-1]
 
 
-def set_git_path(
-    *_,
-    arg_pos,
-    **__,
-):
-    Data.git_path = sys.argv[arg_pos + 1]
-    print(f'set git path "{Data.git_path}"')
-
-
-def set_branch(
-    *_,
-    arg_pos,
-    **__,
-):
-    Data.branch = sys.argv[arg_pos + 1]
-    print(f'set branch "{Data.branch}"')
-
-
-def set_remote(
-    *_,
-    arg_pos,
-    **__,
-):
-    Data.remote = sys.argv[arg_pos + 1]
-    print(f'set remote "{Data.remote}"')
-
-
-def set_commit_message(
-    *_,
-    arg_pos,
-    **__,
-):
-    Data.commit_message = sys.argv[arg_pos + 1]
-    print(f'set commit_message "{Data.commit_message}"')
-
-
 def check_username():
     if not run(
         f'{Data.git_path} config --global user.name'
@@ -402,6 +366,7 @@ class Data:
         {
             'args': (
                 '-m',
+                '--message',
                 '--commit_message'
             ),
             'info':
@@ -446,8 +411,10 @@ def get_help(
 
     for option in options_list:
         text = f'''\
-[light_slate_blue]    args:  [white]{' [bright_black]|[/bright_black] '.join(option['args'])}
-[light_slate_blue]    info:  [purple]{option['info']}
+[light_slate_blue]    args:  [white]\
+{' [bright_black]|[/bright_black] '.join(option['args'])}
+[light_slate_blue]    info:  [purple]\
+{option['info']}
 '''
         if isinstance(
             option['examples'],
@@ -464,8 +431,8 @@ f'[light_slate_blue] example:  [medium_purple2]{option["examples"]}'
             end_section = True,
         )
     print(table)
-    print(f'[green] PrettyGit v{version}')
     rule()
+    print(f'[bold green] PrettyGit [bold blue]v{version}')
     exit()
 
 
@@ -484,6 +451,18 @@ def parse_args(
                 get_help(
                     options_list = Data.options_list
                 )
+            case '-b' | '--branch':
+                Data.branch = sys.argv[index]
+                print(f'set branch "{Data.branch}"')
+            case '-r' | '--remote':
+                Data.remote = sys.argv[index]
+                print(f'set remote "{Data.remote}"')
+            case '-m' | '--message' | '--commit_message':
+                Data.commit_message = sys.argv[index]
+                print(f'set commit_message "{Data.commit_message}"')
+            case '-g' | '--git_path':
+                Data.git_path = sys.argv[index]
+                print(f'set git path "{Data.git_path}"')
             case _:
                 pass
 
