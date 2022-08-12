@@ -446,7 +446,7 @@ def get_help(
 
     for option in options_list:
         text = f'''\
-[light_slate_blue]    args:  [white]{' | '.join(option['args'])}
+[light_slate_blue]    args:  [white]{' [bright_black]|[/bright_black] '.join(option['args'])}
 [light_slate_blue]    info:  [purple]{option['info']}
 '''
         if isinstance(
