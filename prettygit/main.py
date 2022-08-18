@@ -394,6 +394,7 @@ def select_branch():
         branches_list = Data.config[
             'branches'
         ] + [
+            'cancel'
             'add new',
             'delete branch',
         ]
@@ -419,6 +420,8 @@ def select_branch():
                 )
             case 'delete branch':
                 delete_branch()
+            case 'cancel':
+                exit()
             case _:
                 return branch
 
