@@ -25,6 +25,7 @@ from prettygit.setup import version
 
 c = rich.console.Console()
 print = c.print
+print(f'[bold][blue]prettygit v[white]{version}')
 Key = keyboard.Key
 proj_dir = os.getcwd()
 config_path = Path(f'{proj_dir}/.git/prettygit.yml')
