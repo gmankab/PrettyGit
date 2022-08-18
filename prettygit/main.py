@@ -10,7 +10,7 @@ https://gnu.org/licenses/gpl-3.0.en.html
 from rich import traceback
 from pynput import keyboard
 import subprocess
-from prettygit.selection import Selection
+from selection import Selection
 import rich
 import time
 import yaml
@@ -40,6 +40,78 @@ yes_or_no = Selection(
         'red'
     ]
 )
+
+
+@dataclass
+class Data:
+    branch = None
+    remote = 'origin'
+    commit_message = 'aboba'
+    git_path = 'git1'
+    config = {}
+    options_list = [
+        {
+            'args': (
+                '-h',
+                '--help'
+            ),
+            'info':
+                'show this message',
+            'examples':
+                'easygit --help',
+        },
+        {
+            'args': (
+                '-b',
+                '--branch'
+            ),
+            'info':
+                'set branch for pushing',
+            'examples':
+                'easygit --branch main',
+        },
+        {
+            'args': (
+                '-r',
+                '--remote'
+            ),
+            'info':
+                'set remote for pushing',
+            'examples':
+                'easygit --remote origin',
+        },
+        {
+            'args': (
+                '-m',
+                '--message',
+                '--commit_message'
+            ),
+            'info':
+                'set commit message',
+            'examples':
+                'easygit --commit_message aboba',
+        },
+        {
+            'args': (
+                '-g',
+                '--git_path'
+            ),
+            'info':
+                'permanently set new path for git',
+            'examples': [
+                'easygit --git_path /bin/git',
+                'easygit --git_path D:\\\\git\\\\git.exe',
+            ],
+        },
+    ]
+
+
+def create_config():
+    if config_path.exists():
+        Data.config = yml_read_file(
+            config_path
+        )
+        Data.git_path = Data.config['git_path']
 
 
 def yml_read_str(
@@ -82,40 +154,36 @@ def yml_save(
 
 
 def git_init():
+    print(f'try init git in [blue]{proj_dir}[/blue]?')
+    if yes_or_no.choose() == 'no':
+        sys.exit()
+    check_gitignore()
+    run(f'{Data.git_path} init')
+    config_path.parent.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
+    Data.config['branches'] = [
+        'main',
+        'beta',
+    ]
+    Data.config['git_path'] = [
+        Data.git_path
+    ]
+
+    yml_save(
+        data = Data.config,
+        file_path = config_path,
+    )
     check_git()
-    check_remote()
-    if config_path.exists():
-        Data.config = yml_read_file(
-            config_path
+    check_username()
+    check_email()
+    if run(
+        f'{Data.git_path} config --global credential.helper'
+    ) != 'store':
+        run(
+            f'{Data.git_path} config --global credential.helper store'
         )
-    else:
-        print(f'try init git in [blue]{proj_dir}[/blue]?')
-        if yes_or_no.choose() == 'no':
-            sys.exit()
-        check_gitignore()
-        run(f'{Data.git_path} init')
-        config_path.parent.mkdir(
-            parents=True,
-            exist_ok=True,
-        )
-        Data.config = {
-            'branches': [
-                'main',
-            ],
-        }
-        yml_save(
-            data = Data.config,
-            file_path = config_path,
-        )
-        check_git()
-        check_username()
-        check_email()
-        if run(
-            f'{Data.git_path} config --global credential.helper'
-        ) != 'store':
-            run(
-                f'{Data.git_path} config --global credential.helper store'
-            )
 
 
 def run(
@@ -165,24 +233,26 @@ def check_email():
 
 
 def check_git():
-    selection = Selection(
-        items = [
-            'try again',
-            'input path',
-            'exit,'
-        ],
-        styles = [
-            'green',
-            'blue',
-            'red',
-        ],
-    )
+    selection = None
     while True:
         if run(
             f'{Data.git_path} --version'
         ).split()[0] == 'git':
             return
         else:
+            if not selection:
+                selection = Selection(
+                    items = [
+                        'try again',
+                        'input path',
+                        'exit'
+                    ],
+                    styles = [
+                        'green',
+                        'blue',
+                        'red',
+                    ],
+                )
             if Data.git_path == 'git':
                 print('[red]can\'t find git on this computer')
             else:
@@ -194,6 +264,11 @@ def check_git():
                 case 'input path':
                     print('[blue]please input path for git:')
                     Data.git_path = input()
+                    Data.config['git_path'] = Data.git_path
+                    yml_save(
+                        data = Data.config,
+                        file_path = config_path,
+                    )
 
 
 def inp(
@@ -330,7 +405,7 @@ def select_branch():
             'green',
             'red',
         )
-        print('[green]select branch:')
+        print('\n[green]select branch:')
         branch = branches.choose()
         match branch:
             case 'add new':
@@ -347,70 +422,6 @@ def select_branch():
                 delete_branch()
             case _:
                 return branch
-
-
-@dataclass
-class Data:
-    branch = None
-    remote = 'origin'
-    commit_message = 'aboba'
-    git_path = "git1"
-    config = {}
-    options_list = [
-        {
-            'args': (
-                '-h',
-                '--help'
-            ),
-            'info':
-                'show this message',
-            'examples':
-                'easygit --help',
-        },
-        {
-            'args': (
-                '-b',
-                '--branch'
-            ),
-            'info':
-                'set branch for pushing',
-            'examples':
-                'easygit --branch main',
-        },
-        {
-            'args': (
-                '-r',
-                '--remote'
-            ),
-            'info':
-                'set remote for pushing',
-            'examples':
-                'easygit --remote origin',
-        },
-        {
-            'args': (
-                '-m',
-                '--message',
-                '--commit_message'
-            ),
-            'info':
-                'set commit message',
-            'examples':
-                'easygit --commit_message aboba',
-        },
-        {
-            'args': (
-                '-g',
-                '--git_path'
-            ),
-            'info':
-                'set path for git',
-            'examples': [
-                'easygit --git_path /bin/git',
-                'easygit --git_path D:\\\\git\\\\git.exe',
-            ],
-        },
-    ]
 
 
 def get_help(
@@ -457,16 +468,23 @@ f'[light_slate_blue] example:  [medium_purple2]{option["examples"]}'
     print(table)
     rule()
     print(f'[bold green] PrettyGit [bold blue]v{version}')
-    exit()
 
 
 def parse_args(
     options_list,
 ):
-    class BadArgumentError(Exception):
-        pass
+    def check_arg(
+        name,
+        arg,
+    ):
+        if index >= len(sys.argv):
+            print(
+                f'[bold red]excepted {name} after [bold blue]{arg}[/bold blue] argument but nothing got'
+            )
+            exit()
 
     index = 1
+
     for arg in sys.argv[1:]:
         index += 1
 
@@ -475,30 +493,50 @@ def parse_args(
                 get_help(
                     options_list = Data.options_list
                 )
+                exit()
+
             case '-b' | '--branch':
+                check_arg('branch name', arg)
                 Data.branch = sys.argv[index]
                 print(f'set branch "{Data.branch}"')
+
             case '-r' | '--remote':
+                check_arg('remote name', arg)
                 Data.remote = sys.argv[index]
                 print(f'set remote "{Data.remote}"')
+
             case '-m' | '--message' | '--commit_message':
+                check_arg('commit_message', arg)
                 Data.commit_message = sys.argv[index]
                 print(f'set commit_message "{Data.commit_message}"')
+
             case '-g' | '--git_path':
+                check_arg('git path', arg)
                 Data.git_path = sys.argv[index]
-                print(f'set git path "{Data.git_path}"')
+                Data.config['git_path'] = Data.git_path
+                yml_save(
+                    data = Data.config,
+                    file_path = config_path,
+                )
+                print(f'permanently set git path "{Data.git_path}"')
+
             case _:
                 pass
 
 
 def main():
-    check_gitignore()
     parse_args(Data.options_list)
+    check_git()
+    if not config_path.exists():
+        git_init()
+        create_config()
+    check_remote()
     git_init()
-    os.system(f'{Data.git_path} add --all')
-    os.system(f'{Data.git_path} commit -m "{Data.commit_message}"')
+    check_gitignore()
     if not Data.branch:
         Data.branch = select_branch()
+    os.system(f'{Data.git_path} add --all')
+    os.system(f'{Data.git_path} commit -m "{Data.commit_message}"')
     run(f'{Data.git_path} branch -m {Data.branch}')
     os.system(f'{Data.git_path} push --set-upstream {Data.remote} {Data.branch}')
 

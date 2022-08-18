@@ -4,9 +4,9 @@ build-backend = "hatchling.build"
 
 [project]
 dependencies = [
-  "rich",
-  "pynput",
+  "easyselect",
   "pyyaml",
+  "rich",
 ]
 name = "PrettyGit"
 version = "22.0.9"
