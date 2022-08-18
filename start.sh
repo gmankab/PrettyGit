@@ -1,4 +1,4 @@
 #!/bin/bash
-python prettygit
+python ./prettygit
 # python test.py
 # bash build.sh
