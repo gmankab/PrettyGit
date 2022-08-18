@@ -9,10 +9,9 @@ https://gnu.org/licenses/gpl-3.0.en.html
 
 from rich import traceback
 from pynput import keyboard
+from easyselect import Selection
 import subprocess
-from selection import Selection
 import rich
-import time
 import yaml
 import sys
 import os
@@ -28,7 +27,7 @@ c = rich.console.Console()
 print = c.print
 Key = keyboard.Key
 proj_dir = os.getcwd()
-config_path = Path(f'{proj_dir}/.git/easygit.yml')
+config_path = Path(f'{proj_dir}/.git/prettygit.yml')
 run_st = subprocess.getstatusoutput
 yes_or_no = Selection(
     items = [
@@ -58,7 +57,7 @@ class Data:
             'info':
                 'show this message',
             'examples':
-                'easygit --help',
+                'prettygit --help',
         },
         {
             'args': (
@@ -68,7 +67,7 @@ class Data:
             'info':
                 'set branch for pushing',
             'examples':
-                'easygit --branch main',
+                'prettygit --branch main',
         },
         {
             'args': (
@@ -78,7 +77,7 @@ class Data:
             'info':
                 'set remote for pushing',
             'examples':
-                'easygit --remote origin',
+                'prettygit --remote origin',
         },
         {
             'args': (
@@ -89,7 +88,7 @@ class Data:
             'info':
                 'set commit message',
             'examples':
-                'easygit --commit_message aboba',
+                'prettygit --commit_message aboba',
         },
         {
             'args': (
@@ -99,8 +98,8 @@ class Data:
             'info':
                 'permanently set new path for git',
             'examples': [
-                'easygit --git_path /bin/git',
-                'easygit --git_path D:\\\\git\\\\git.exe',
+                'prettygit --git_path /bin/git',
+                'prettygit --git_path D:\\\\git\\\\git.exe',
             ],
         },
     ]
