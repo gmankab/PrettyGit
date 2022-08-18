@@ -9,7 +9,7 @@ dependencies = [
   "rich",
 ]
 name = "PrettyGit"
-version = "22.0.9"
+version = "22.0.10"
 authors = [
   { name="gmanka", email="gmankab@gmail.com" },
 ]

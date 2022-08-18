@@ -21,7 +21,7 @@ from dataclasses import dataclass
 rich.pretty.install()
 traceback.install(show_locals=True)
 
-from prettygit.setup import version
+from prettygit.setup import version, yes_or_no
 
 c = rich.console.Console()
 print = c.print
@@ -30,16 +30,7 @@ Key = keyboard.Key
 proj_dir = os.getcwd()
 config_path = Path(f'{proj_dir}/.git/prettygit.yml')
 run_st = subprocess.getstatusoutput
-yes_or_no = Selection(
-    items = [
-        'yes',
-        'no',
-    ],
-    styles = [
-        'green',
-        'red'
-    ]
-)
+
 
 
 @dataclass
@@ -47,7 +38,7 @@ class Data:
     branch = None
     remote = 'origin'
     commit_message = 'aboba'
-    git_path = 'git'
+    git_path = None
     config = {}
     options_list = [
         {
@@ -112,6 +103,19 @@ def create_config():
             config_path
         )
         Data.git_path = Data.config['git_path']
+    else:
+        Data.config['branches'] = [
+            'main',
+            'beta',
+        ]
+        Data.git_path = 'git'
+        Data.config['git_path'] = Data.git_path
+
+        yml_save(
+            data = Data.config,
+            file_path = config_path,
+        )
+        git_init()
 
 
 def yml_read_str(
@@ -126,7 +130,10 @@ def yml_read_str(
 def yml_read_file(
     file_path: str | Path
 ):
-    with open(file_path, 'r') as file:
+    with open(
+        file_path,
+        'r',
+    ) as file:
         return yml_read_str(
             file
         )
@@ -145,7 +152,10 @@ def yml_save(
     data: any,
     file_path: str | Path,
 ) -> None:
-    with open(file_path, 'w') as file:
+    with open(
+        file_path,
+        'w'
+    ) as file:
         file.write(
             to_yml_str(
                 data,
@@ -163,19 +173,6 @@ def git_init():
         parents=True,
         exist_ok=True,
     )
-    Data.config['branches'] = [
-        'main',
-        'beta',
-    ]
-    Data.config['git_path'] = [
-        Data.git_path
-    ]
-
-    yml_save(
-        data = Data.config,
-        file_path = config_path,
-    )
-    check_git()
     check_username()
     check_email()
     if run(
@@ -395,7 +392,7 @@ def select_branch():
         branches_list = Data.config[
             'branches'
         ] + [
-            'cancel'
+            'cancel',
             'add new',
             'delete branch',
         ]
@@ -529,12 +526,9 @@ def parse_args(
 
 def main():
     parse_args(Data.options_list)
+    create_config()
     check_git()
-    if not config_path.exists():
-        git_init()
-        create_config()
     check_remote()
-    git_init()
     check_gitignore()
     if not Data.branch:
         Data.branch = select_branch()

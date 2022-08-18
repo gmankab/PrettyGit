@@ -1,5 +1,6 @@
 from rich import traceback
 from pathlib import Path
+from easyselect import Selection
 import shutil as sh
 import platform
 import rich
@@ -7,12 +8,22 @@ import sys
 import os
 
 
-version = '22.0.9'
+version = '22.0.10'
 proj_path = Path(__file__).parent.resolve()
 icon_ico_source = f'{proj_path}/icon.ico'
 c = rich.console.Console()
 print = c.print
 portable = 'portable' in sys.argv
+yes_or_no = Selection(
+    items = [
+        'yes',
+        'no',
+    ],
+    styles = [
+        'green',
+        'red'
+    ]
+)
 
 
 def main():
@@ -65,13 +76,23 @@ Exec=/bin/python -m prettygit
     print(
 f'''
 [green]\
-created file [deep_sky_blue1]{dotdesktop_path}
+Created file [deep_sky_blue1]{dotdesktop_path}
 
 [green]\
-this script can be runned with following commands:
+This script can be runned with following command:
 [deep_sky_blue1]\
-{sys.executable} -m easygit
+python -m prettygit
+[/deep_sky_blue1]\
+Do you want do create shortcuts in \
+[deep_sky_blue1]/bin[/deep_sky_blue1]?
+Then you will be able to run this script with [deep_sky_blue1]prettygit[/deep_sky_blue1] and [deep_sky_blue1]pg[/deep_sky_blue1] commands
+Creating this shortcuts requires sudo\
 '''
+    )
+    if yes_or_no.choose() == 'no':
+        return
+    os.system(
+        'echo "python -m prettygit" | sudo tee /bin/pg /bin/prettygit'
     )
 
 
@@ -125,9 +146,9 @@ Shortcut.Save
     sh.copyfile(shortcut, start_menu)
     text = f'''
 [green]\
-created shortcuts on desktop and start panel
+Created shortcuts on desktop and start panel
 
-this script can be runned with following commands:
+This script can be runned with following commands:
 [deep_sky_blue1]\
 {sys.executable} {proj_path}
 {shortcut}
