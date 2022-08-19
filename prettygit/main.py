@@ -10,6 +10,7 @@ https://gnu.org/licenses/gpl-3.0.en.html
 from rich import traceback
 from pynput import keyboard
 from easyselect import Selection
+import shutil as sh
 import subprocess
 import rich
 import yaml
@@ -25,12 +26,11 @@ from prettygit.setup import version, yes_or_no
 
 c = rich.console.Console()
 print = c.print
-print(f'[bold]prettygit v[white]{version}')
+print(f'[bold][deep_sky_blue1]prettygit v[white]{version}')
 Key = keyboard.Key
-proj_dir = os.getcwd()
-config_path = Path(f'{proj_dir}/.git/prettygit.yml')
+proj_path = os.getcwd()
+config_path = Path(f'{proj_path}/.git/prettygit.yml')
 run_st = subprocess.getstatusoutput
-
 
 
 @dataclass
@@ -164,7 +164,7 @@ def yml_save(
 
 
 def git_init():
-    print(f'try init git in [blue]{proj_dir}[/blue]?')
+    print(f'try init git in [blue]{proj_path}[/blue]?')
     if yes_or_no.choose() == 'no':
         sys.exit()
     check_gitignore()
@@ -346,7 +346,7 @@ def check_remote(
 
 def check_gitignore():
     gitignore_path = Path(
-        f"{proj_dir}/.gitignore"
+        f"{proj_path}/.gitignore"
     )
     if not gitignore_path.exists():
         with open(gitignore_path, 'w') as gitignore:
@@ -354,6 +354,7 @@ def check_gitignore():
 '''\
 __pycache__
 test.*
+dist
 '''
             )
 
@@ -392,16 +393,17 @@ def select_branch():
         branches_list = Data.config[
             'branches'
         ] + [
-            'cancel',
             'add new',
             'delete branch',
+            'cancel',
         ]
         branches = Selection(
             branches_list
         )
-        branches.styles[-2:] = (
+        branches.styles[-3:] = (
             'green',
             'red',
+            'bright_black',
         )
         print('\n[green]select branch:')
         branch = branches.choose()
@@ -524,6 +526,26 @@ def parse_args(
                 pass
 
 
+def pypi():
+    if not Path(
+        f'{proj_path}/pyproject.toml'
+    ).exists():
+        return
+    print('do you want to upload package to pypi?')
+    if yes_or_no.choose() == 'no':
+        return
+    dist_path = Path(f'{proj_path}/dist')
+    print(f'remove [deep_sky_blue1]{dist_path}[/deep_sky_blue1]?')
+    if yes_or_no.choose() == 'no':
+        return
+    sh.rmtree(
+        dist_path,
+        ignore_errors=True,
+    )
+    os.system(f'{sys.executable} -m hatchling build')
+    os.system(f'{sys.executable} -m twine upload dist/*')
+
+
 def main():
     parse_args(Data.options_list)
     create_config()
@@ -536,6 +558,7 @@ def main():
     os.system(f'{Data.git_path} commit -m "{Data.commit_message}"')
     run(f'{Data.git_path} branch -m {Data.branch}')
     os.system(f'{Data.git_path} push --set-upstream {Data.remote} {Data.branch}')
+    pypi
 
 
 main()

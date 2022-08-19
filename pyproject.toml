@@ -5,7 +5,9 @@ build-backend = "hatchling.build"
 [project]
 dependencies = [
   "easyselect",
+  "hatchling",
   "pyyaml",
+  "twine",
   "rich",
 ]
 name = "PrettyGit"

@@ -91,8 +91,16 @@ Creating this shortcuts requires sudo\
     )
     if yes_or_no.choose() == 'no':
         return
+    script = '''\
+#!/bin/bash
+python -m prettygit
+'''
     os.system(
-        'echo "python -m prettygit" | sudo tee /bin/pg /bin/prettygit'
+f'''
+echo "{script}" | sudo tee /bin/pg /bin/prettygit
+sudo chmod +x /bin/prettygit
+sudo chmod +x /bin/pg
+'''
     )
 
 
