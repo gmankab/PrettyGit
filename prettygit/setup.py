@@ -8,7 +8,7 @@ import sys
 import os
 
 
-version = '22.0.10'
+version = '22.0.11'
 proj_path = Path(__file__).parent.resolve()
 icon_ico_source = f'{proj_path}/icon.ico'
 c = rich.console.Console()
