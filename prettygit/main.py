@@ -558,7 +558,7 @@ def main():
     os.system(f'{Data.git_path} commit -m "{Data.commit_message}"')
     run(f'{Data.git_path} branch -m {Data.branch}')
     os.system(f'{Data.git_path} push --set-upstream {Data.remote} {Data.branch}')
-    pypi
+    pypi()
 
 
 main()
