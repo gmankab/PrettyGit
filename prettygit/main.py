@@ -531,11 +531,11 @@ def pypi():
         f'{proj_path}/pyproject.toml'
     ).exists():
         return
-    print('do you want to upload package to pypi?')
+    print('[green]do you want to upload package to pypi?')
     if yes_or_no.choose() == 'no':
         return
     dist_path = Path(f'{proj_path}/dist')
-    print(f'remove [deep_sky_blue1]{dist_path}[/deep_sky_blue1]?')
+    print(f'[red]remove [deep_sky_blue1]{dist_path}[/deep_sky_blue1]?')
     if yes_or_no.choose() == 'no':
         return
     sh.rmtree(
