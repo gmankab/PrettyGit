@@ -104,6 +104,10 @@ def create_config():
         )
         Data.git_path = Data.config['git_path']
     else:
+        config_path.parent.mkdir(
+            parents=True,
+            exist_ok=True,
+        )
         Data.config['branches'] = [
             'main',
             'beta',
@@ -169,10 +173,6 @@ def git_init():
         sys.exit()
     check_gitignore()
     run(f'{Data.git_path} init')
-    config_path.parent.mkdir(
-        parents=True,
-        exist_ok=True,
-    )
     check_username()
     check_email()
     if run(
@@ -535,7 +535,7 @@ def pypi():
     if yes_or_no.choose() == 'no':
         return
     dist_path = Path(f'{proj_path}/dist')
-    print(f'[red]remove [deep_sky_blue1]{dist_path}[/deep_sky_blue1]?')
+    print(f'[red]remove [deep_sky_blue1]{dist_path}[/deep_sky_blue1] ?')
     if yes_or_no.choose() == 'no':
         return
     sh.rmtree(
