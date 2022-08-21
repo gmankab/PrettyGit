@@ -27,3 +27,4 @@ classifiers = [
 [project.urls]
 "Homepage" = "https://github.com/gmankab/PrettyGit"
 "Bug Tracker" = "https://github.com/gmankab/PrettyGit/issues"
+"Documentation" = "https://github.com/gmankab/PrettyGit"

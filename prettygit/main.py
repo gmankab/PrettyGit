@@ -8,16 +8,15 @@ https://gnu.org/licenses/gpl-3.0.en.html
 '''
 
 from rich import traceback
-from pynput import keyboard
+from pathlib import Path
 from easyselect import Selection
+from dataclasses import dataclass
 import shutil as sh
 import subprocess
 import rich
 import yaml
 import sys
 import os
-from pathlib import Path
-from dataclasses import dataclass
 
 rich.pretty.install()
 traceback.install(show_locals=True)
@@ -27,7 +26,6 @@ from prettygit.setup import version, yes_or_no
 c = rich.console.Console()
 print = c.print
 print(f'[bold][deep_sky_blue1]prettygit v[white]{version}')
-Key = keyboard.Key
 proj_path = os.getcwd()
 config_path = Path(f'{proj_path}/.git/prettygit.yml')
 run_st = subprocess.getstatusoutput
@@ -312,7 +310,7 @@ After creating repo input link here:\
             url = 'https://' + url
 
         print(
-            f'use url [deep_sky_blue1]{url}[/deep_sky_blue1] for git?'
+            f'\nuse url [deep_sky_blue1]{url}[/deep_sky_blue1] for git?'
         )
 
         if yes_or_no.choose() == 'yes':
@@ -531,7 +529,7 @@ def pypi():
         f'{proj_path}/pyproject.toml'
     ).exists():
         return
-    print('[green]do you want to upload package to pypi?')
+    print('\n[green]do you want to upload package to pypi?')
     if yes_or_no.choose() == 'no':
         return
     dist_path = Path(f'{proj_path}/dist')
