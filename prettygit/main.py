@@ -9,7 +9,7 @@ https://gnu.org/licenses/gpl-3.0.en.html
 
 from rich import traceback
 from pathlib import Path
-from easyselect import Selection
+from easyselect import Sel
 from dataclasses import dataclass
 import shutil as sh
 import subprocess
@@ -236,7 +236,7 @@ def check_git():
             return
         else:
             if not selection:
-                selection = Selection(
+                selection = Sel(
                     items = [
                         'try again',
                         'input path',
@@ -364,7 +364,7 @@ def delete_branch():
         ] + [
             'cancel'
         ]
-        branches = Selection(
+        branches = Sel(
             branches_list
         )
         branches.styles[-1] = 'green'
@@ -395,7 +395,7 @@ def select_branch():
             'delete branch',
             'cancel',
         ]
-        branches = Selection(
+        branches = Sel(
             branches_list
         )
         branches.styles[-3:] = (

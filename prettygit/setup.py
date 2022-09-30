@@ -1,6 +1,6 @@
 from rich import traceback
 from pathlib import Path
-from easyselect import Selection
+from easyselect import Sel
 import shutil as sh
 import platform
 import rich
@@ -8,13 +8,13 @@ import sys
 import os
 
 
-version = '22.0.12'
+version = '22.0.13'
 proj_path = Path(__file__).parent.resolve()
 icon_ico_source = f'{proj_path}/icon.ico'
 c = rich.console.Console()
 print = c.print
 portable = 'portable' in sys.argv
-yes_or_no = Selection(
+yes_or_no = Sel(
     items = [
         'yes',
         'no',
