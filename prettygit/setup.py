@@ -73,7 +73,7 @@ Exec=/bin/python -m prettygit
         f'{share}/icons/PrettyGit.svg',
     )
 
-    print(
+    if yes_or_no.choose(
 f'''
 [green]\
 Created file [deep_sky_blue1]{dotdesktop_path}
@@ -88,8 +88,7 @@ Do you want do create shortcuts in \
 Then you will be able to run this script with [deep_sky_blue1]prettygit[/deep_sky_blue1] and [deep_sky_blue1]pg[/deep_sky_blue1] commands
 Creating this shortcuts requires sudo\
 '''
-    )
-    if yes_or_no.choose() == 'no':
+    ) == 'no':
         return
     script = '''\
 #!/bin/bash

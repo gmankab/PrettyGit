@@ -166,8 +166,10 @@ def yml_save(
 
 
 def git_init():
-    print(f'try init git in [blue]{proj_path}[/blue]?')
-    if yes_or_no.choose() == 'no':
+    if yes_or_no.choose(
+        f'try init git in [blue]{proj_path}[/blue]?'
+    ) == 'no':
+
         sys.exit()
     check_gitignore()
     run(f'{Data.git_path} init')
@@ -181,7 +183,6 @@ def git_init():
         )
 
 
-
 def run(
     command: str
 ) -> str:
@@ -191,17 +192,16 @@ def run(
 
 
 def check_username():
-    if not run(
+    username = run(
         f'{Data.git_path} config --global user.name'
-    ):
+    )
+    if not username:
         username = run('echo "$USER"')
 
         while True:
-            print(
+            if yes_or_no.choose(
                 f'use username "{username}" for git?'
-            )
-
-            if yes_or_no.choose() == 'yes':
+            ) == 'yes':
                 run(f'{Data.git_path} config --global user.name {username}')
                 print(f'[green]set git username [blue]"{username}"')
                 break
@@ -219,25 +219,24 @@ def check_email():
         text = '[green]input new email for git:'
         while True:
             email = inp(text)
-            print(
+            if yes_or_no.choose(
                 f'use email "{email}" for git?'
-            )
-            if yes_or_no.choose() == 'yes':
+            ) == 'yes':
                 run(f'{Data.git_path} config --global user.email {email}')
                 print(f'[green]set git email [blue]"{email}"')
                 break
 
 
 def check_git():
-    selection = None
+    actions = None
     while True:
         if run(
             f'{Data.git_path} --version'
         ).split()[0] == 'git':
             return
         else:
-            if not selection:
-                selection = Sel(
+            if not actions:
+                actions = Sel(
                     items = [
                         'try again',
                         'input path',
@@ -250,11 +249,13 @@ def check_git():
                     ],
                 )
             if Data.git_path == 'git':
-                print('[red]can\'t find git on this computer')
+                text = '[red]can\'t find git on this computer'
             else:
-                print(f'[red]can\'t find git on this path - "{Data.git_path}"')
-            answer = selection.choose()
-            match answer:
+                text = f'[red]can\'t find git on this path - "{Data.git_path}"'
+            action = actions.choose(
+                text
+            )
+            match action:
                 case 'exit':
                     exit()
                 case 'input path':
@@ -265,6 +266,8 @@ def check_git():
                         data = Data.config,
                         file_path = config_path,
                     )
+                case 'try again':
+                    continue
 
 
 def inp(
@@ -310,11 +313,9 @@ After creating repo input link here:\
         if 'https://' not in url:
             url = 'https://' + url
 
-        print(
+        if yes_or_no.choose(
             f'\nuse url [deep_sky_blue1]{url}[/deep_sky_blue1] for git?'
-        )
-
-        if yes_or_no.choose() == 'yes':
+        ) == 'yes':
             run(f'{Data.git_path} remote add {remote_name} {url}')
             print('[green]your git remotes:')
             git_remotes = {}
@@ -369,12 +370,14 @@ def delete_branch():
             branches_list
         )
         branches.styles[-1] = 'green'
-        print('[green]select branch to delete:')
-        branch = branches.choose()
+        branch = branches.choose(
+            '[green]select branch to delete:'
+        )
         if branch == 'cancel':
             return
-        print(f'[green]do you really want to delete branch [red1]"{branch}"[/red1]?')
-        if yes_or_no.choose() == 'yes':
+        if yes_or_no.choose(
+            f'[green]do you really want to delete branch [red1]"{branch}"[/red1]?'
+        ) == 'yes':
             Data.config[
                 'branches'
             ].remove(
@@ -404,8 +407,9 @@ def select_branch():
             'red',
             'bright_black',
         )
-        print('\n[green]select branch:')
-        branch = branches.choose()
+        branch = branches.choose(
+            '\n[green]select branch:'
+        )
         match branch:
             case 'add new':
                 branch_to_add = None
@@ -530,12 +534,14 @@ def pypi():
         f'{proj_path}/pyproject.toml'
     ).exists():
         return
-    print('\n[green]do you want to upload package to pypi?')
-    if yes_or_no.choose() == 'no':
+    if yes_or_no.choose(
+        '\n[green]do you want to upload package to pypi?'
+    ) == 'no':
         return
     dist_path = Path(f'{proj_path}/dist')
-    print(f'[red]remove [deep_sky_blue1]{dist_path}[/deep_sky_blue1] ?')
-    if yes_or_no.choose() == 'no':
+    if yes_or_no.choose(
+        f'[red]remove [deep_sky_blue1]{dist_path}[/deep_sky_blue1] ?'
+    ) == 'no':
         return
     sh.rmtree(
         dist_path,
@@ -553,6 +559,7 @@ def main():
     check_gitignore()
     if not Data.branch:
         Data.branch = select_branch()
+    print(f'selected branch {Data.branch}')
     os.system(f'{Data.git_path} add --all')
     os.system(f'{Data.git_path} commit -m "{Data.commit_message}"')
     run(f'{Data.git_path} branch -m {Data.branch}')
