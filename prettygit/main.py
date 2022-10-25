@@ -38,7 +38,7 @@ config_path = Path(
     f'{proj_path}/.git/prettygit.yml'
 )
 config = Data(
-    file_path = config_path
+    file_path=config_path
 )
 temp_data = Data()
 run_st = subprocess.getstatusoutput
@@ -102,6 +102,10 @@ options_list = [
 
 
 def check_config():
+    if config_path.exists():
+        is_git_init = False
+    else:
+        is_git_init = True
     if not temp_data['commit_message']:
         temp_data['commit_message'] = 'aboba'
     if not config['remote']:
@@ -113,6 +117,8 @@ def check_config():
         ]
     if not config['git_path']:
         config['git_path'] = 'git'
+    if is_git_init:
+        git_init()
 
 
 def git_init():
@@ -203,12 +209,12 @@ def check_git():
         else:
             if not actions:
                 actions = Sel(
-                    items = [
+                    items=[
                         'try again',
                         'input path',
                         'exit'
                     ],
-                    styles = [
+                    styles=[
                         'green',
                         'blue',
                         'red',
@@ -233,7 +239,7 @@ def check_git():
 
 
 def inp(
-    text = None,
+    text=None,
 ) -> str:
     output = None
     while not output:
@@ -250,7 +256,7 @@ def check_remote():
         return
 
     text = (
-'''
+        '''
 [bold green]\
 Please create repo on one of this sites.
 If your terminal supports links, use [blue1]ctrl+click[/blue1] to open link:
@@ -309,7 +315,7 @@ def check_gitignore():
     if not gitignore_path.exists():
         with open(gitignore_path, 'w') as gitignore:
             gitignore.write(
-'''\
+                '''\
 __pycache__
 *config*
 *.txt
@@ -414,15 +420,15 @@ def get_help(
     def rule():
         c.rule(
             '[bold blue]Help',
-            style = 'green',
-            characters = '━'
+            style='green',
+            characters='━'
         )
     rule()
     table = rich.table.Table(
-        show_header = False,
-        show_edge = False,
-        expand = True,
-        border_style = None,
+        show_header=False,
+        show_edge=False,
+        expand=True,
+        border_style=None,
     )
     table.add_column()
 
@@ -441,11 +447,11 @@ def get_help(
             text += ("\n" + " " * 11).join(option['examples'])
         else:
             text += (
-f'[light_slate_blue] example:  [purple]{option["examples"]}'
+                f'[light_slate_blue] example:  [purple]{option["examples"]}'
             )
         table.add_row(
             text,
-            end_section = True,
+            end_section=True,
         )
     print(table)
     rule()
@@ -477,7 +483,7 @@ def parse_args(
 
         match arg:
             case 'h' | '-h' | 'help' | '--help':
-                get_help(local_options_list = local_options_list)
+                get_help(local_options_list=local_options_list)
                 sys.exit()
             case '-b' | '--branch':
                 temp_data['branch'] = get_arg('branch name')
@@ -492,11 +498,13 @@ def parse_args(
             case '-m' | '--message' | '--commit_message':
                 skip_next = True
                 temp_data.commit_message = get_arg('commit_message')
-                print(f'[green]set commit_message [blue]"{temp_data.commit_message}"')
+                print(
+                    f'[green]set commit_message [blue]"{temp_data.commit_message}"')
             case '-g' | '--git_path':
                 skip_next = True
                 config['git_path'] = get_arg('git path')
-                print(f'[green]permanently set git path [blue]"{config.git_path}"')
+                print(
+                    f'[green]permanently set git path [blue]"{config.git_path}"')
             case _:
                 print(f'[bold red]wrong argument [blue]{arg}')
                 sys.exit()
@@ -539,8 +547,6 @@ def pypi():
 def main():
     parse_args(options_list)
     check_config()
-    check_git()
-    git_init()
     check_remote()
     check_gitignore()
     check_branch()
