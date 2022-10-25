@@ -529,13 +529,7 @@ def pypi():
     if dist_path.exists():
         print('always_delete' in config)
         print(config.always_delete)
-        if 'always_delete' in config:
-            match config.always_delete:
-                case True:
-                    pass
-                case False:
-                    return
-        else:
+        if not config['always_delete']:
             act = alw_yes_no.choose(
                 f'[red]remove [deep_sky_blue1]{dist_path}[/deep_sky_blue1] ?'
             )
