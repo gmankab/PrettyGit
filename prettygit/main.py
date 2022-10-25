@@ -101,7 +101,9 @@ options_list = [
 ]
 
 
-def config_init():
+def check_config():
+    if not temp_data['commit_message']:
+        temp_data['commit_message'] = 'aboba'
     if not config['remote']:
         config['remote'] = 'origin'
     if not config['branches']:
@@ -536,7 +538,7 @@ def pypi():
 
 def main():
     parse_args(options_list)
-    config_init()
+    check_config()
     check_git()
     git_init()
     check_remote()
