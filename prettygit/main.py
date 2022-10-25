@@ -518,28 +518,38 @@ def pypi():
     act = yes_no.choose(
         '\n[green]do you want to upload package to pypi?'
     )
-    match act:
-        case 'yes':
-            pass
-        case 'no':
-            return
     dist_path = Path(f'{proj_path}/dist')
-    act = alw_yes_no.choose(
-        f'[red]remove [deep_sky_blue1]{dist_path}[/deep_sky_blue1] ?'
-    )
-    match act:
-        case 'yes':
-            pass
-        case 'no':
-            return
-        case 'always yes':
-            pass
-        case 'always no':
-            return
-    sh.rmtree(
-        dist_path,
-        ignore_errors=True,
-    )
+    if dist_path.exists():
+        act = alw_yes_no.choose(
+            f'[red]remove [deep_sky_blue1]{dist_path}[/deep_sky_blue1] ?'
+        )
+        match act:
+            case 'yes':
+                pass
+            case 'no':
+                return
+
+        if 'always_delete' in config:
+            match config.always_delete:
+                case True:
+                    pass
+                case False:
+                    return
+        else:
+            match act:
+                case 'yes':
+                    pass
+                case 'no':
+                    return
+                case 'always yes':
+                    config['always_delete'] = True
+                case 'always no':
+                    config['always_delete'] = False
+                    return
+        sh.rmtree(
+            dist_path,
+            ignore_errors=True,
+        )
     os.system(f'{sys.executable} -m hatchling build')
     os.system(f'{sys.executable} -m twine upload dist/*')
 
