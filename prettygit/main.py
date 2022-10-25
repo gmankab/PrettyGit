@@ -546,7 +546,9 @@ def main():
     os.system(f'{config.git_path} add --all')
     os.system(f'{config.git_path} commit -m "{temp_data.commit_message}"')
     run(f'{config.git_path} branch -m {temp_data.branch}')
-    os.system(f'{config.git_path} push --set-upstream {config.remote} {config.branch}')
+    os.system(
+        f'{config.git_path} push --set-upstream {config.remote} {temp_data.branch}'
+    )
     pypi()
 
 
