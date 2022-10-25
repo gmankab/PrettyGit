@@ -525,6 +525,10 @@ def pypi():
             return
         case 'exit':
             sys.exit()
+
+    pypirc_path = Path.home('aboba')
+    print(pypirc_path)
+
     dist_path = Path(f'{proj_path}/dist')
     if dist_path.exists():
         if not config['always_delete']:
