@@ -530,11 +530,11 @@ def pypi():
                 return
             case 'exit':
                 sys.exit()
-
+        print('always_delete' in config)
+        print(config.always_delete)
         if 'always_delete' in config:
             match config.always_delete:
                 case True:
-                    print('a')
                     pass
                 case False:
                     return
