@@ -15,28 +15,26 @@ c = rich.console.Console()
 print = c.print
 portable = 'portable' in sys.argv
 yes_no = Sel(
-    items = [
+    items=[
         'yes',
         'no',
         'exit',
     ],
-    styles = [
+    styles=[
         'green',
         'red',
         'bright_black',
     ]
 )
 alw_yes_no = Sel(
-    items = [
+    items=[
         'yes',
-        'no',
         'always yes',
-        'always no',
+        'no',
         'exit',
     ],
-    styles = [
+    styles=[
         'green',
-        'red',
         'green',
         'red',
         'bright_black',
@@ -55,7 +53,8 @@ def linux():
     home = Path.home()
     share = f'{home}/.local/share'
 
-    dotdesktop_path = Path(f'{home}/.local/share/applications/PrettyGit.desktop')
+    dotdesktop_path = Path(
+        f'{home}/.local/share/applications/PrettyGit.desktop')
     if dotdesktop_path.exists():
         return
     dotdesktop_path.parent.mkdir(
@@ -67,7 +66,7 @@ def linux():
         'w',
     ) as dotdesktop:
         dotdesktop.write(
-'''\
+            '''\
 [Desktop Entry]
 Comment=very simple and user friendly interface for git
 Type=Application
@@ -92,7 +91,7 @@ Exec=/bin/python -m prettygit
     )
 
     act = yes_no.choose(
-f'''
+        f'''
 [green]\
 Created file [deep_sky_blue1]{dotdesktop_path}
 
@@ -119,7 +118,7 @@ Creating this shortcuts requires sudo\
 python -m prettygit
 '''
     os.system(
-f'''
+        f'''
 echo "{script}" | sudo tee /bin/pg /bin/prettygit
 sudo chmod +x /bin/prettygit
 sudo chmod +x /bin/pg
@@ -150,8 +149,8 @@ def windows():
     )
 
     start_menu.parent.mkdir(
-        parents = True,
-        exist_ok = True,
+        parents=True,
+        exist_ok=True,
     )
 
     shortcut_creator_path = f'{proj_path}/shortcut_creator.vbs'
@@ -161,7 +160,7 @@ def windows():
         'w'
     ) as shortcut_creator:
         shortcut_creator.write(
-f'''\
+            f'''\
 set WshShell = WScript.CreateObject("WScript.Shell")
 set Shortcut = WshShell.CreateShortcut("{shortcut}")
 Shortcut.TargetPath = "{sys.executable}"
