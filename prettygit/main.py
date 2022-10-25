@@ -533,7 +533,18 @@ def pypi():
         while True:
             token = inp('input your pypi token:')
             if token[:5] == 'pypi-':
-                pass
+                with open(
+                    pypirc_path,
+                    'w'
+                ) as pypirc:
+                    pypirc.write(
+                        f'''\
+[pypi]
+  username = __token__
+  password = {token}
+'''
+                    )
+                break
             else:
                 act = yes_no.choose(
                     '[bold red]token must start with [blue]pypi-\n'
