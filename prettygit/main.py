@@ -529,6 +529,7 @@ def pypi():
     pypirc_path = Path(
         f'{Path.home()}/.pypirc'
     )
+    print(pypirc_path)
 
     dist_path = Path(f'{proj_path}/dist')
     if dist_path.exists():
