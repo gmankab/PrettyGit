@@ -518,20 +518,17 @@ def pypi():
     act = yes_no.choose(
         '\n[green]do you want to upload package to pypi?'
     )
+    match act:
+        case 'yes':
+            pass
+        case 'no':
+            return
+        case 'exit':
+            sys.exit()
     dist_path = Path(f'{proj_path}/dist')
     if dist_path.exists():
         print('always_delete' in config)
         print(config.always_delete)
-        act = alw_yes_no.choose(
-            f'[red]remove [deep_sky_blue1]{dist_path}[/deep_sky_blue1] ?'
-        )
-        match act:
-            case 'yes':
-                pass
-            case 'no':
-                return
-            case 'exit':
-                sys.exit()
         if 'always_delete' in config:
             match config.always_delete:
                 case True:
@@ -539,6 +536,9 @@ def pypi():
                 case False:
                     return
         else:
+            act = alw_yes_no.choose(
+                f'[red]remove [deep_sky_blue1]{dist_path}[/deep_sky_blue1] ?'
+            )
             match act:
                 case 'yes':
                     pass
