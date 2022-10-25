@@ -526,8 +526,9 @@ def pypi():
         case 'exit':
             sys.exit()
 
-    pypirc_path = Path.home('aboba')
-    print(pypirc_path)
+    pypirc_path = Path(
+        f'{Path.home()}/.pypirc'
+    )
 
     dist_path = Path(f'{proj_path}/dist')
     if dist_path.exists():
