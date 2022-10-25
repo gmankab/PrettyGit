@@ -529,7 +529,21 @@ def pypi():
     pypirc_path = Path(
         f'{Path.home()}/.pypirc'
     )
-    print(pypirc_path)
+    if not pypirc_path.exists():
+        while True:
+            token = inp('input your pypi token:')
+            if token[:5] == 'pypi-':
+                pass
+            else:
+                act = yes_no.choose(
+                    '[bold red]token must start with [blue]pypi-\n'
+                    '[green]input again?'
+                )
+                match act:
+                    case 'yes':
+                        continue
+                    case 'no' | 'exit':
+                        sys.exit()
 
     dist_path = Path(f'{proj_path}/dist')
     if dist_path.exists():
