@@ -527,8 +527,6 @@ def pypi():
             sys.exit()
     dist_path = Path(f'{proj_path}/dist')
     if dist_path.exists():
-        print('always_delete' in config)
-        print(config.always_delete)
         if not config['always_delete']:
             act = alw_yes_no.choose(
                 f'[red]remove [deep_sky_blue1]{dist_path}[/deep_sky_blue1] ?'
@@ -536,12 +534,9 @@ def pypi():
             match act:
                 case 'yes':
                     pass
-                case 'no':
-                    return
                 case 'always yes':
                     config['always_delete'] = True
-                case 'always no':
-                    config['always_delete'] = False
+                case 'no':
                     return
                 case 'exit':
                     sys.exit()
