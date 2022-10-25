@@ -528,10 +528,13 @@ def pypi():
                 pass
             case 'no':
                 return
+            case 'exit':
+                sys.exit()
 
         if 'always_delete' in config:
             match config.always_delete:
                 case True:
+                    print('a')
                     pass
                 case False:
                     return
@@ -546,6 +549,8 @@ def pypi():
                 case 'always no':
                     config['always_delete'] = False
                     return
+                case 'exit':
+                    sys.exit()
         sh.rmtree(
             dist_path,
             ignore_errors=True,
