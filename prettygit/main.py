@@ -408,7 +408,7 @@ def select_branch():
             'bright_black',
         )
         branch = branches.choose(
-            '\n[green]select branch:'
+            '\n[green]select branch for pushing:'
         )
         match branch:
             case 'add new':
