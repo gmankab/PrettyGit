@@ -14,14 +14,32 @@ icon_ico_source = f'{proj_path}/icon.ico'
 c = rich.console.Console()
 print = c.print
 portable = 'portable' in sys.argv
-yes_or_no = Sel(
+yes_no = Sel(
     items = [
         'yes',
         'no',
+        'exit',
     ],
     styles = [
         'green',
-        'red'
+        'red',
+        'bright_black',
+    ]
+)
+alw_yes_no = Sel(
+    items = [
+        'yes',
+        'no',
+        'always yes',
+        'always no',
+        'exit',
+    ],
+    styles = [
+        'green',
+        'red',
+        'green',
+        'red',
+        'bright_black',
     ]
 )
 
@@ -73,7 +91,7 @@ Exec=/bin/python -m prettygit
         f'{share}/icons/PrettyGit.svg',
     )
 
-    if yes_or_no.choose(
+    act = yes_no.choose(
 f'''
 [green]\
 Created file [deep_sky_blue1]{dotdesktop_path}
@@ -88,8 +106,14 @@ Do you want do create shortcuts in \
 Then you will be able to run this script with [deep_sky_blue1]prettygit[/deep_sky_blue1] and [deep_sky_blue1]pg[/deep_sky_blue1] commands
 Creating this shortcuts requires sudo\
 '''
-    ) == 'no':
-        return
+    )
+    match act:
+        case 'yes':
+            pass
+        case 'no':
+            return
+        case 'exit':
+            sys.exit()
     script = '''\
 #!/bin/bash
 python -m prettygit

@@ -7,179 +7,130 @@ license - gnu gpl 3
 https://gnu.org/licenses/gpl-3.0.en.html
 '''
 
-from rich import traceback
 from pathlib import Path
 from easyselect import Sel
+from rich import traceback
+from betterdata import Data
 from dataclasses import dataclass
+from prettygit.setup import (
+    version,
+    yes_no,
+    alw_yes_no,
+)
 import shutil as sh
 import subprocess
 import rich
-import yaml
 import sys
 import os
+
 
 rich.pretty.install()
 traceback.install(show_locals=True)
 
-from prettygit.setup import version, yes_or_no
 
 c = rich.console.Console()
 print = c.print
-print(f'[bold][deep_sky_blue1]prettygit v[white]{version}')
+print(
+    f'[bold][deep_sky_blue1]prettygit [white]{version}'
+)
 proj_path = os.getcwd()
-config_path = Path(f'{proj_path}/.git/prettygit.yml')
+config_path = Path(
+    f'{proj_path}/.git/prettygit.yml'
+)
+config = Data(
+    file_path = config_path
+)
+temp_data = Data()
 run_st = subprocess.getstatusoutput
 
 
-@dataclass
-class Data:
-    branch = None
-    remote = 'origin'
-    commit_message = 'aboba'
-    git_path = None
-    config = {}
-    options_list = [
-        {
-            'args': (
-                '-h',
-                '--help'
-            ),
-            'info':
-                'show this message',
-            'examples':
-                'prettygit --help',
-        },
-        {
-            'args': (
-                '-b',
-                '--branch'
-            ),
-            'info':
-                'set branch for pushing',
-            'examples':
-                'prettygit --branch main',
-        },
-        {
-            'args': (
-                '-r',
-                '--remote'
-            ),
-            'info':
-                'set remote for pushing',
-            'examples':
-                'prettygit --remote origin',
-        },
-        {
-            'args': (
-                '-m',
-                '--message',
-                '--commit_message'
-            ),
-            'info':
-                'set commit message',
-            'examples':
-                'prettygit --commit_message aboba',
-        },
-        {
-            'args': (
-                '-g',
-                '--git_path'
-            ),
-            'info':
-                'permanently set new path for git',
-            'examples': [
-                'prettygit --git_path /bin/git',
-                'prettygit --git_path D:\\\\git\\\\git.exe',
-            ],
-        },
-    ]
+options_list = [
+    {
+        'args': (
+            '-h',
+            '--help'
+        ),
+        'info':
+            'show this message',
+        'examples':
+            'prettygit --help',
+    },
+    {
+        'args': (
+            '-b',
+            '--branch'
+        ),
+        'info':
+            'set branch for pushing',
+        'examples':
+            'prettygit --branch main',
+    },
+    {
+        'args': (
+            '-r',
+            '--remote'
+        ),
+        'info':
+            'set remote for pushing',
+        'examples':
+            'prettygit --remote origin',
+    },
+    {
+        'args': (
+            '-m',
+            '--message',
+            '--commit_message'
+        ),
+        'info':
+            'set commit message',
+        'examples':
+            'prettygit --commit_message aboba',
+    },
+    {
+        'args': (
+            '-g',
+            '--git_path'
+        ),
+        'info':
+            'permanently set new path for git',
+        'examples': [
+            'prettygit --git_path /bin/git',
+            'prettygit --git_path D:\\\\git\\\\git.exe',
+        ],
+    },
+]
 
 
-def create_config():
-    if config_path.exists():
-        Data.config = yml_read_file(
-            config_path
-        )
-        Data.git_path = Data.config['git_path']
-    else:
-        config_path.parent.mkdir(
-            parents=True,
-            exist_ok=True,
-        )
-        Data.config['branches'] = [
+def config_init():
+    if not config['remote']:
+        config['remote'] = 'origin'
+    if not config['branches']:
+        config['branches'] = [
             'main',
             'beta',
         ]
-        Data.git_path = 'git'
-        Data.config['git_path'] = Data.git_path
-
-        yml_save(
-            data = Data.config,
-            file_path = config_path,
-        )
-        git_init()
-
-
-def yml_read_str(
-    data: str,
-) -> any:
-    return yaml.load(
-        data,
-        Loader = yaml.CLoader,
-    )
-
-
-def yml_read_file(
-    file_path: str | Path
-):
-    with open(
-        file_path,
-        'r',
-    ) as file:
-        return yml_read_str(
-            file
-        )
-
-
-def to_yml_str(
-    data: any,
-) -> str:
-    return yaml.dump(
-        data,
-        Dumper = yaml.CDumper,
-    )
-
-
-def yml_save(
-    data: any,
-    file_path: str | Path,
-) -> None:
-    with open(
-        file_path,
-        'w'
-    ) as file:
-        file.write(
-            to_yml_str(
-                data,
-            )
-        )
+    if not config['git_path']:
+        config['git_path'] = 'git'
 
 
 def git_init():
-    if yes_or_no.choose(
+    act = yes_no.choose(
         f'try init git in [blue]{proj_path}[/blue]?'
-    ) == 'no':
-
-        sys.exit()
+    )
+    match act:
+        case 'yes':
+            pass
+        case 'no' | 'exit':
+            sys.exit()
     check_gitignore()
-    run(f'{Data.git_path} init')
+    run(f'{config.git_path} init')
     check_username()
     check_email()
     if run(
-        f'{Data.git_path} config --global credential.helper'
+        f'{config.git_path} config --global credential.helper'
     ) != 'store':
         run(
-            f'{Data.git_path} config --global credential.helper store'
+            f'{config.git_path} config --global credential.helper store'
         )
 
 
@@ -193,45 +144,58 @@ def run(
 
 def check_username():
     username = run(
-        f'{Data.git_path} config --global user.name'
+        f'{config.git_path} config --global user.name'
     )
     if not username:
         username = run('echo "$USER"')
-
         while True:
-            if yes_or_no.choose(
+            act = yes_no.choose(
                 f'use username "{username}" for git?'
-            ) == 'yes':
-                run(f'{Data.git_path} config --global user.name {username}')
-                print(f'[green]set git username [blue]"{username}"')
-                break
-
-            username = None
-            while not username:
-                print('[green]input new username for git:')
-                username = input()
+            )
+            match act:
+                case 'yes':
+                    run(
+                        f'{config.git_path} config --global user.name {username}'
+                    )
+                    print(
+                        f'[green]set git username [blue]"{username}"'
+                    )
+                    break
+                case 'no':
+                    username = inp(
+                        '[green]input new username for git:'
+                    )
+                    continue
+                case 'exit':
+                    sys.exit()
 
 
 def check_email():
     if not run(
-        f'{Data.git_path} config --global user.email'
+        f'{config.git_path} config --global user.email'
     ):
         text = '[green]input new email for git:'
         while True:
             email = inp(text)
-            if yes_or_no.choose(
+            act = yes_no.choose(
                 f'use email "{email}" for git?'
-            ) == 'yes':
-                run(f'{Data.git_path} config --global user.email {email}')
-                print(f'[green]set git email [blue]"{email}"')
-                break
+            )
+            match act:
+                case 'yes':
+                    run(f'{config.git_path} config --global user.email {email}')
+                    print(f'[green]set git email [blue]"{email}"')
+                    break
+                case 'no':
+                    continue
+                case 'exit':
+                    sys.exit()
 
 
 def check_git():
     actions = None
     while True:
         if run(
-            f'{Data.git_path} --version'
+            f'{config.git_path} --version'
         ).split()[0] == 'git':
             return
         else:
@@ -248,23 +212,19 @@ def check_git():
                         'red',
                     ],
                 )
-            if Data.git_path == 'git':
+            if config.git_path == 'git':
                 text = '[red]can\'t find git on this computer'
             else:
-                text = f'[red]can\'t find git on this path - "{Data.git_path}"'
+                text = f'[red]can\'t find git on this path - "{config.git_path}"'
             action = actions.choose(
                 text
             )
             match action:
                 case 'exit':
-                    exit()
+                    sys.exit()
                 case 'input path':
-                    print('[blue]please input path for git:')
-                    Data.git_path = input()
-                    Data.config['git_path'] = Data.git_path
-                    yml_save(
-                        data = Data.config,
-                        file_path = config_path,
+                    config['git_path'] = inp(
+                        '[blue]please input path for git:'
                     )
                 case 'try again':
                     continue
@@ -281,11 +241,12 @@ def inp(
     return output
 
 
-def add_remote(
-    remote_name = None
-):
-    if not remote_name:
-        remote_name = Data.remote
+def check_remote():
+    if run(
+        f'{config.git_path} remote get-url {config["remote"]}'
+    ).split()[0] != 'error:':
+        return
+
     text = (
 '''
 [bold green]\
@@ -313,35 +274,30 @@ After creating repo input link here:\
         if 'https://' not in url:
             url = 'https://' + url
 
-        if yes_or_no.choose(
+        act = yes_no.choose(
             f'\nuse url [deep_sky_blue1]{url}[/deep_sky_blue1] for git?'
-        ) == 'yes':
-            run(f'{Data.git_path} remote add {remote_name} {url}')
-            print('[green]your git remotes:')
-            git_remotes = {}
-            for remote in run(
-                f'{Data.git_path} remote'
-            ).split():
-                git_remotes[remote] = run(
-                    f'{Data.git_path} remote get-url {remote}'
-                )
-            for key, val in git_remotes.items():
-                print(f'{key}: [deep_sky_blue1]{val}')
-            print()
-            break
-
-
-def check_remote(
-    remote_name = None
-):
-    if not remote_name:
-        remote_name = Data.remote
-    if run(
-        f'{Data.git_path} remote get-url {remote_name}'
-    ).split()[0] == 'error:':
-        add_remote(
-            remote_name
         )
+        match act:
+            case 'yes':
+                pass
+            case 'no':
+                continue
+            case 'exit':
+                sys.exit()
+
+        run(f'{config.git_path} remote add {config.remote_name} {url}')
+        print('[green]your git remotes:')
+        git_remotes = {}
+        for remote in run(
+            f'{config.git_path} remote'
+        ).split():
+            git_remotes[remote] = run(
+                f'{config.git_path} remote get-url {remote}'
+            )
+        for key, val in git_remotes.items():
+            print(f'{key}: [deep_sky_blue1]{val}')
+        print()
+        break
 
 
 def check_gitignore():
@@ -353,7 +309,11 @@ def check_gitignore():
             gitignore.write(
 '''\
 __pycache__
-test.*
+*config*
+*.txt
+*.yml
+*.log
+test*
 dist
 '''
             )
@@ -361,43 +321,59 @@ dist
 
 def delete_branch():
     while True:
-        branches_list = Data.config[
+        branches_list = config[
             'branches'
         ] + [
-            'cancel'
+            'exit',
+            'cancel',
         ]
         branches = Sel(
             branches_list
         )
-        branches.styles[-1] = 'green'
+        branches.styles[-2:] = [
+            'bright_black',
+            'green',
+        ]
         branch = branches.choose(
             '[green]select branch to delete:'
         )
-        if branch == 'cancel':
-            return
-        if yes_or_no.choose(
-            f'[green]do you really want to delete branch [red1]"{branch}"[/red1]?'
-        ) == 'yes':
-            Data.config[
-                'branches'
-            ].remove(
-                branch
-            )
-            yml_save(
-                data = Data.config,
-                file_path = config_path,
-            )
-            return
+
+        match branch:
+            case 'cancel':
+                return
+            case 'exit':
+                sys.exit()
+            case _:
+                pass
+        act = yes_no.choose(
+            f'[red]do you really want to delete branch [blue]"{branch}"[/blue]?'
+        )
+        match act:
+            case 'yes':
+                pass
+            case 'no':
+                continue
+            case 'exit':
+                sys.exit()
+        config[
+            'branches'
+        ].remove(
+            branch
+        )
+        config.to_file()
+        return
 
 
-def select_branch():
+def check_branch() -> None:
+    if temp_data['branch']:
+        return
     while True:
-        branches_list = Data.config[
+        branches_list = config[
             'branches'
         ] + [
             'add new',
             'delete branch',
-            'cancel',
+            'exit',
         ]
         branches = Sel(
             branches_list
@@ -412,26 +388,25 @@ def select_branch():
         )
         match branch:
             case 'add new':
-                branch_to_add = None
-                while not branch_to_add:
-                    print('[green]input new branch name:')
-                    branch_to_add = input()
-                Data.config['branches'].append(branch_to_add)
-                yml_save(
-                    data = Data.config,
-                    file_path = config_path,
+                branch_to_add = inp(
+                    '[green]input new branch name:'
                 )
+                config['branches'].append(
+                    branch_to_add
+                )
+                config.to_file()
             case 'delete branch':
                 delete_branch()
-            case 'cancel':
-                exit()
+            case 'exit':
+                sys.exit()
             case _:
-                return branch
+                temp_data['branch'] = branch
+                return
 
 
 def get_help(
     *_,
-    options_list,
+    local_options_list,
     **__
 ):
     def rule():
@@ -445,26 +420,26 @@ def get_help(
         show_header = False,
         show_edge = False,
         expand = True,
-        border_style = 'blue',
+        border_style = None,
     )
     table.add_column()
 
-    for option in options_list:
+    for option in local_options_list:
         text = f'''\
-[light_slate_blue]    args:  [white]\
+[light_slate_blue]    args:  [bold deep_sky_blue1]\
 {' [bright_black]|[/bright_black] '.join(option['args'])}
-[light_slate_blue]    info:  [purple]\
+[/bold deep_sky_blue1][light_slate_blue]    info:  [medium_purple2]\
 {option['info']}
 '''
         if isinstance(
             option['examples'],
             list
         ):
-            text += '[light_slate_blue]examples:  [medium_purple2]'
+            text += '[light_slate_blue]examples:  [purple]'
             text += ("\n" + " " * 11).join(option['examples'])
         else:
             text += (
-f'[light_slate_blue] example:  [medium_purple2]{option["examples"]}'
+f'[light_slate_blue] example:  [purple]{option["examples"]}'
             )
         table.add_row(
             text,
@@ -472,61 +447,57 @@ f'[light_slate_blue] example:  [medium_purple2]{option["examples"]}'
         )
     print(table)
     rule()
-    print(f'[bold green] PrettyGit [bold blue]v{version}')
 
 
 def parse_args(
-    options_list,
+    local_options_list
 ):
-    def check_arg(
+    def get_arg(
         name,
-        arg,
-    ):
-        if index >= len(sys.argv):
+    ) -> str:
+        nonlocal arg_index
+        nonlocal arg
+        if arg_index >= len(sys.argv):
             print(
                 f'[bold red]excepted {name} after [bold blue]{arg}[/bold blue] argument but nothing got'
             )
-            exit()
+            sys.exit()
+        return sys.argv[arg_index]
 
-    index = 1
+    arg_index = 1
+    skip_next = False
 
     for arg in sys.argv[1:]:
-        index += 1
+        arg_index += 1
+        if skip_next:
+            skip_next = False
+            continue
 
         match arg:
             case 'h' | '-h' | 'help' | '--help':
-                get_help(
-                    options_list = Data.options_list
-                )
-                exit()
-
+                get_help(local_options_list = local_options_list)
+                sys.exit()
             case '-b' | '--branch':
-                check_arg('branch name', arg)
-                Data.branch = sys.argv[index]
-                print(f'set branch "{Data.branch}"')
-
+                temp_data['branch'] = get_arg('branch name')
+                skip_next = True
+                if temp_data['branch'] not in config['branches']:
+                    config['branches'].append(temp_data['branch'])
+                print(f'[green]set branch [blue]"{temp_data.branch}"')
             case '-r' | '--remote':
-                check_arg('remote name', arg)
-                Data.remote = sys.argv[index]
-                print(f'set remote "{Data.remote}"')
-
+                skip_next = True
+                config['remote'] = get_arg('remote name')
+                print(f'[green]permanently set remote [blue]"{config.remote}"')
             case '-m' | '--message' | '--commit_message':
-                check_arg('commit_message', arg)
-                Data.commit_message = sys.argv[index]
-                print(f'set commit_message "{Data.commit_message}"')
-
+                skip_next = True
+                temp_data.commit_message = get_arg('commit_message')
+                print(f'[green]set commit_message [blue]"{temp_data.commit_message}"')
             case '-g' | '--git_path':
-                check_arg('git path', arg)
-                Data.git_path = sys.argv[index]
-                Data.config['git_path'] = Data.git_path
-                yml_save(
-                    data = Data.config,
-                    file_path = config_path,
-                )
-                print(f'permanently set git path "{Data.git_path}"')
-
+                skip_next = True
+                config['git_path'] = get_arg('git path')
+                print(f'[green]permanently set git path [blue]"{config.git_path}"')
             case _:
-                pass
+                print(f'[bold red]wrong argument [blue]{arg}')
+                sys.exit()
 
 
 def pypi():
@@ -534,15 +505,27 @@ def pypi():
         f'{proj_path}/pyproject.toml'
     ).exists():
         return
-    if yes_or_no.choose(
+    act = yes_no.choose(
         '\n[green]do you want to upload package to pypi?'
-    ) == 'no':
-        return
+    )
+    match act:
+        case 'yes':
+            pass
+        case 'no':
+            return
     dist_path = Path(f'{proj_path}/dist')
-    if yes_or_no.choose(
+    act = alw_yes_no.choose(
         f'[red]remove [deep_sky_blue1]{dist_path}[/deep_sky_blue1] ?'
-    ) == 'no':
-        return
+    )
+    match act:
+        case 'yes':
+            pass
+        case 'no':
+            return
+        case 'always yes':
+            pass
+        case 'always no':
+            return
     sh.rmtree(
         dist_path,
         ignore_errors=True,
@@ -552,18 +535,18 @@ def pypi():
 
 
 def main():
-    parse_args(Data.options_list)
-    create_config()
+    parse_args(options_list)
+    config_init()
     check_git()
+    git_init()
     check_remote()
     check_gitignore()
-    if not Data.branch:
-        Data.branch = select_branch()
-    print(f'selected branch {Data.branch}')
-    os.system(f'{Data.git_path} add --all')
-    os.system(f'{Data.git_path} commit -m "{Data.commit_message}"')
-    run(f'{Data.git_path} branch -m {Data.branch}')
-    os.system(f'{Data.git_path} push --set-upstream {Data.remote} {Data.branch}')
+    check_branch()
+    print(f'selected branch {temp_data.branch}')
+    os.system(f'{config.git_path} add --all')
+    os.system(f'{config.git_path} commit -m "{temp_data.commit_message}"')
+    run(f'{config.git_path} branch -m {temp_data.branch}')
+    os.system(f'{config.git_path} push --set-upstream {config.remote} {config.branch}')
     pypi()
 
 

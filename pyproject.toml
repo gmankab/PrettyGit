@@ -5,8 +5,8 @@ build-backend = "hatchling.build"
 [project]
 dependencies = [
   "easyselect",
+  "betterdata",
   "hatchling",
-  "pyyaml",
   "twine",
   "rich",
 ]

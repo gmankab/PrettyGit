@@ -1,5 +1,6 @@
 #!/bin/bash
 rm .git/prettygit.yml
-python ./prettygit
+pip uninstall prettygit
+python ./prettygit -m a
 # python test.py
 # bash build.sh
