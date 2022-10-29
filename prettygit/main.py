@@ -102,10 +102,16 @@ options_list = [
 
 
 def check_config():
-    if config_path.exists():
-        is_git_init = False
-    else:
-        is_git_init = True
+    if not config['inited_git']:
+        act = yes_no.choose(
+            f'try init git in [blue]{proj_path}[/]?'
+        )
+        match act:
+            case 'yes':
+                pass
+            case 'no' | 'exit':
+                sys.exit()
+    temp_data['git_init'] = True
     if not temp_data['commit_message']:
         temp_data['commit_message'] = 'aboba'
     if not config['remote']:
@@ -117,29 +123,25 @@ def check_config():
         ]
     if not config['git_path']:
         config['git_path'] = 'git'
-    if is_git_init:
-        git_init()
 
 
 def git_init():
-    act = yes_no.choose(
-        f'try init git in [blue]{proj_path}[/blue]?'
-    )
-    match act:
-        case 'yes':
-            pass
-        case 'no' | 'exit':
-            sys.exit()
-    check_gitignore()
+    if not temp_data['git_init']:
+        return
     run(f'{config.git_path} init')
+    check_gitignore()
     check_username()
     check_email()
+    check_remote()
+    check_gitignore()
+    check_branch()
     if run(
         f'{config.git_path} config --global credential.helper'
     ) != 'store':
         run(
             f'{config.git_path} config --global credential.helper store'
         )
+    config['inited_git'] = True
 
 
 def run(
@@ -202,9 +204,10 @@ def check_email():
 def check_git():
     actions = None
     while True:
-        if run(
+        git_ver = run(
             f'{config.git_path} --version'
-        ).split()[0] == 'git':
+        )
+        if git_ver.split()[0] == 'git':
             return
         else:
             if not actions:
@@ -220,12 +223,8 @@ def check_git():
                         'red',
                     ],
                 )
-            if config.git_path == 'git':
-                text = '[red]can\'t find git on this computer'
-            else:
-                text = f'[red]can\'t find git on this path - "{config.git_path}"'
             action = actions.choose(
-                text
+                f'[red]can\'t find git on this path - "{config.git_path}"'
             )
             match action:
                 case 'exit':
@@ -283,7 +282,7 @@ After creating repo input link here:\
             url = 'https://' + url
 
         act = yes_no.choose(
-            f'\nuse url [deep_sky_blue1]{url}[/deep_sky_blue1] for git?'
+            f'use url [deep_sky_blue1]{url}[/deep_sky_blue1] for git?'
         )
         match act:
             case 'yes':
@@ -293,7 +292,7 @@ After creating repo input link here:\
             case 'exit':
                 sys.exit()
 
-        run(f'{config.git_path} remote add {config.remote_name} {url}')
+        run(f'{config.git_path} remote add {config.remote} {url}')
         print('[green]your git remotes:')
         git_remotes = {}
         for remote in run(
@@ -313,7 +312,14 @@ def check_gitignore():
         f"{proj_path}/.gitignore"
     )
     if not gitignore_path.exists():
-        with open(gitignore_path, 'w') as gitignore:
+        gitignore_path.parent.mkdir(
+            exist_ok = True,
+            parents = True,
+        )
+        with open(
+            gitignore_path,
+            'w'
+        ) as gitignore:
             gitignore.write(
                 '''\
 __pycache__
@@ -392,7 +398,7 @@ def check_branch() -> None:
             'bright_black',
         )
         branch = branches.choose(
-            '\n[green]select branch for pushing:'
+            '[green]select branch for pushing:'
         )
         match branch:
             case 'add new':
@@ -533,6 +539,10 @@ def pypi():
         while True:
             token = inp('input your pypi token:')
             if token[:5] == 'pypi-':
+                pypirc_path.parent.mkdir(
+                    exist_ok = True,
+                    parents = True,
+                )
                 with open(
                     pypirc_path,
                     'w'
@@ -582,9 +592,8 @@ def pypi():
 def main():
     parse_args(options_list)
     check_config()
-    check_remote()
-    check_gitignore()
-    check_branch()
+    check_git()
+    git_init()
     print(f'selected branch {temp_data.branch}')
     os.system(f'{config.git_path} add --all')
     os.system(f'{config.git_path} commit -m "{temp_data.commit_message}"')
