@@ -1,4 +1,4 @@
-# PrettyGit by gmanka
+# prettygit by gmanka
 
 <img src="https://github.com/gmankab/prettygit/raw/main/img/transparent.png">
 

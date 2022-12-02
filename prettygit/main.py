@@ -7,7 +7,7 @@ from rich import traceback
 from betterdata import Data
 from dataclasses import dataclass
 from prettygit.setup import (
-    version,
+    app_version,
     yes_no,
     alw_yes_no,
 )
@@ -22,7 +22,7 @@ traceback.install(show_locals=True)
 c = rich.console.Console()
 print = c.print
 print(
-    f'[bold][deep_sky_blue1]prettygit [white]{version}'
+    f'[bold][deep_sky_blue1]prettygit [white]{app_version}'
 )
 proj_path = os.getcwd()
 config_path = Path(

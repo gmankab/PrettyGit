@@ -1,21 +1,26 @@
 # license: gnu gpl 3 https://gnu.org/licenses/gpl-3.0.en.html
 # sources: https://github.com/gmankab/prettygit
 
-from rich import traceback
 from pathlib import Path
 from easyselect import Sel
 import shutil as sh
+import subprocess as sp
 import platform
 import rich
 import sys
 import os
 
-version = '22.0.13'
+app_version = '22.0.13'
+app_name = 'prettygit'
 proj_path = Path(__file__).parent.resolve()
-icon_ico_source = f'{proj_path}/icon.ico'
+modules_path = Path(__file__).parent.parent.resolve()
 c = rich.console.Console()
 print = c.print
-portable = 'portable' in sys.argv
+win_py_file = Path(f'{modules_path}/{app_name}_win.py')
+portable = win_py_file.exists()
+run_st = sp.getstatusoutput
+run = sp.getoutput
+os_name = platform.system()
 yes_no = Sel(
     items=[
         'yes',
@@ -45,10 +50,11 @@ alw_yes_no = Sel(
 
 
 def main():
-    if platform.system() == 'Linux':
-        linux()
-    elif platform.system() == 'Windows':
-        windows()
+    match os_name:
+        case 'Linux':
+            linux()
+        case 'Windows':
+            windows()
 
 
 def linux():
@@ -56,7 +62,8 @@ def linux():
     share = f'{home}/.local/share'
 
     dotdesktop_path = Path(
-        f'{home}/.local/share/applications/PrettyGit.desktop')
+        f'{home}/.local/share/applications/{app_name}.desktop'
+    )
     if dotdesktop_path.exists():
         return
     dotdesktop_path.parent.mkdir(
@@ -68,43 +75,44 @@ def linux():
         'w',
     ) as dotdesktop:
         dotdesktop.write(
-            '''\
+f'''\
 [Desktop Entry]
 Comment=very simple and user friendly interface for git
 Type=Application
-Icon=PrettyGit
-Name=PrettyGit
+Icon={app_name}
+Name={app_name}
 Terminal=true
 TerminalOptions=\\s--noclose
 Hidden=false
-Keywords=pretty;git
-Exec=/bin/python -m prettygit
+Keywords={app_name};pretty;git
+Exec=/bin/python -m {app_name}
 '''
         )
 
-    icon_path = Path(f'{share}/icons/PrettyGit.svg')
-    icon_path.parent.mkdir(
+    icon_source = Path(f'{proj_path}/icons/icon.svg')
+    icon_target = Path(f'{share}/icons/{app_name}.svg')
+    icon_target.parent.mkdir(
         parents=True,
         exist_ok=True
     )
     sh.copy(
-        f'{proj_path}/icon.svg',
-        f'{share}/icons/PrettyGit.svg',
+        icon_source,
+        icon_target,
     )
 
     act = yes_no.choose(
-        f'''
+f'''
 [green]\
 Created file [deep_sky_blue1]{dotdesktop_path}
 
 [green]\
 This script can be runned with following command:
 [deep_sky_blue1]\
-python -m prettygit
+python -m {app_name}
 [/deep_sky_blue1]\
 Do you want do create shortcuts in \
 [deep_sky_blue1]/bin[/deep_sky_blue1]?
-Then you will be able to run this script with [deep_sky_blue1]prettygit[/deep_sky_blue1] and [deep_sky_blue1]pg[/deep_sky_blue1] commands
+Then you will be able to run this script with [deep_sky_blue1]{app_name}[/deep_sky_blue1] and [deep_sky_blue1]pg[/deep_sky_blue1] commands
 Creating this shortcuts requires sudo\
 '''
     )
@@ -115,14 +123,14 @@ Creating this shortcuts requires sudo\
             return
         case 'exit':
             sys.exit()
-    script = '''\
+    script = f'''\
 #!/bin/bash
-python -m prettygit $@
+python -m {app_name} $@
 '''
     os.system(
-        f'''
-echo "{script}" | sudo tee /bin/pg /bin/prettygit
-sudo chmod +x /bin/prettygit
+f'''
+echo "{script}" | sudo tee /bin/pg /bin/{app_name}
+sudo chmod +x /bin/{app_name}
 sudo chmod +x /bin/pg
 '''
     )
@@ -136,8 +144,8 @@ def windows():
     if shortcut.exists():
         return
 
-    icon = Path(
-        f'{Path(__file__).parent.resolve()}/icon.ico'
+    icon_source = Path(
+        f'{proj_path}/icons/icon.ico'
     )
 
     home = os.environ["USERPROFILE"]
@@ -151,8 +159,8 @@ def windows():
     )
 
     start_menu.parent.mkdir(
-        parents=True,
-        exist_ok=True,
+        parents = True,
+        exist_ok = True,
     )
 
     shortcut_creator_path = f'{proj_path}/shortcut_creator.vbs'
@@ -162,12 +170,12 @@ def windows():
         'w'
     ) as shortcut_creator:
         shortcut_creator.write(
-            f'''\
+f'''\
 set WshShell = WScript.CreateObject("WScript.Shell")
 set Shortcut = WshShell.CreateShortcut("{shortcut}")
 Shortcut.TargetPath = "{sys.executable}"
-Shortcut.Arguments = "{proj_path} {'portable' if portable else ""}"
-Shortcut.IconLocation = "{icon}"
+Shortcut.Arguments = "{proj_path}"
+Shortcut.IconLocation = "{icon_source}"
 Shortcut.Save
 '''
         )
@@ -187,7 +195,7 @@ This script can be runned with following commands:
 {desktop}
 '''
     if not portable:
-        text += f'{sys.executable} -m prettygit\n'
+        text += f'{sys.executable} -m {app_name}\n'
     print(
         text,
         highlight=False,
