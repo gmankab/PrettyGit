@@ -2,7 +2,7 @@
 
 <img src="https://github.com/gmankab/prettygit/raw/main/img/transparent.png">
 
-user friendly interface for git
+user-friendly interface for git, supports commits, pushes, and uploading to [pipy.org](https://pypi.org)
 
 ## navigation
 
