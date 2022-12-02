@@ -20,13 +20,13 @@ user-friendly interface for git, supports commits, pushes, and uploading to [pip
 ### installation via terminal
 
 install on linux:  
-`curl -sSL gmankab.github.io/reposter.sh | sh`
+`curl -sSL gmankab.github.io/prettygit.sh | sh`
 
 install on any os:  
-`pip install reposter`
+`pip install prettygit`
 
 launch on any os:  
-`python -m reposter`
+`python -m prettygit`
 
 
 ### help
