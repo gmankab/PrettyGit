@@ -7,16 +7,39 @@ user friendly interface for git
 ## navigation
 
 - [installation](#installation)
-- [usage](#usage)
+- [installation via terminal](#installation-via-terminal)
+- [help](#help)
 
 
 ### installation
 
+[prettygit.sh](https://gmankab.github.io/prettygit.sh) - for linux  
+[prettygit.bat](https://gmankab.github.io/prettygit.bat) - for windows
 
-     args:  -h | --help                                                                   
-     info:  show this message                                                             
-  example:  prettygit --help                                                              
-──────────────────────────────────────────────────────────────────────────────────────────
+### installation via terminal
+
+install on linux:  
+`curl -sSL gmankab.github.io/reposter.sh | sh`
+
+install on any os:  
+`pip install reposter`
+
+launch on any os:  
+`python -m reposter`
+
+
+### help
+
+to use the script, you do not have to read what is written below
+
+these are just optional arguments you can specify when you run the script
+
+```
+   args:  -h | --help
+   info:  show this message
+example:  prettygit --help
+```
+
      args:  -b | --branch                                                                 
      info:  set branch for pushing                                                        
   example:  prettygit --branch main                                                       
