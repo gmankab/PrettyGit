@@ -1,3 +1,6 @@
+# license: gnu gpl 3 https://gnu.org/licenses/gpl-3.0.en.html
+# sources: https://github.com/gmankab/prettygit
+
 from rich import traceback
 from pathlib import Path
 from easyselect import Sel
@@ -6,7 +9,6 @@ import platform
 import rich
 import sys
 import os
-
 
 version = '22.0.13'
 proj_path = Path(__file__).parent.resolve()
@@ -115,7 +117,7 @@ Creating this shortcuts requires sudo\
             sys.exit()
     script = '''\
 #!/bin/bash
-python -m prettygit
+python -m prettygit $@
 '''
     os.system(
         f'''

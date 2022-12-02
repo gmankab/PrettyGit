@@ -1,11 +1,5 @@
-#!/bin/python
-
-'''
-very simple and user friendly interface for git
-
-license - gnu gpl 3
-https://gnu.org/licenses/gpl-3.0.en.html
-'''
+# license: gnu gpl 3 https://gnu.org/licenses/gpl-3.0.en.html
+# sources: https://github.com/gmankab/prettygit
 
 from pathlib import Path
 from easyselect import Sel
@@ -23,11 +17,8 @@ import rich
 import sys
 import os
 
-
 rich.pretty.install()
 traceback.install(show_locals=True)
-
-
 c = rich.console.Console()
 print = c.print
 print(
@@ -42,8 +33,6 @@ config = Data(
 )
 temp_data = Data()
 run_st = subprocess.getstatusoutput
-
-
 options_list = [
     {
         'args': (
