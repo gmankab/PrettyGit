@@ -9,6 +9,7 @@ user friendly interface for git
 - [installation](#installation)
 - [installation via terminal](#installation-via-terminal)
 - [help](#help)
+- [license](#license)
 
 
 ### installation
@@ -36,26 +37,34 @@ these are just optional arguments you can specify when you run the script
 
 ```
    args:  -h | --help
-   info:  show this message
+   info:  get help
 example:  prettygit --help
 ```
 
-     args:  -b | --branch                                                                 
-     info:  set branch for pushing                                                        
-  example:  prettygit --branch main                                                       
-──────────────────────────────────────────────────────────────────────────────────────────
-     args:  -r | --remote                                                                 
-     info:  set remote for pushing                                                        
-  example:  prettygit --remote origin                                                     
-──────────────────────────────────────────────────────────────────────────────────────────
-     args:  -m | --message | --commit_message                                             
-     info:  set commit message                                                            
-  example:  prettygit --commit_message aboba                                              
-──────────────────────────────────────────────────────────────────────────────────────────
-     args:  -g | --git_path                                                               
-     info:  permanently set new path for git                                              
- examples:  prettygit --git_path /bin/git                                                 
-            prettygit --git_path D:\\git\\git.exe   
+```
+   args:  -b | --branch                      
+   info:  set branch for pushing            
+example:  prettygit --branch main
+```
+
+```
+   args:  -r | --remote                         
+   info:  set remote for pushing               
+example:  prettygit --remote origin
+```
+
+```
+   args:  -m | --message | --commit_message
+   info:  set commit message
+example:  prettygit --commit_message aboba
+```
+
+```
+    args:  -g | --git_path
+    info:  permanently set new path for git
+examples:  prettygit --git_path /bin/git
+           prettygit --git_path D:\\git\\git.exe
+```
 
 ## license
 
