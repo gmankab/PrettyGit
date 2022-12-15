@@ -66,6 +66,11 @@ examples:  prettygit --git_path /bin/git
            prettygit --git_path D:\\git\\git.exe
 ```
 
+### changelog[^](#navigation)
+
+you can read changelog [here](https://github.com/gmankab/prettygit/blob/main/changelog.md)
+
+
 ## license
 
 [gnu gpl 3](https://gnu.org/licenses/gpl-3.0.en.html)

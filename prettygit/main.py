@@ -100,9 +100,6 @@ def check_config():
                 pass
             case 'no' | 'exit':
                 sys.exit()
-    temp_data['git_init'] = True
-    if not temp_data['commit_message']:
-        temp_data['commit_message'] = 'aboba'
     if not config['remote']:
         config['remote'] = 'origin'
     if not config['branches']:
@@ -115,15 +112,13 @@ def check_config():
 
 
 def git_init():
-    if not temp_data['git_init']:
+    if not config['inited_git']:
         return
     run(f'{config.git_path} init')
-    check_gitignore()
     check_username()
     check_email()
     check_remote()
     check_gitignore()
-    check_branch()
     if run(
         f'{config.git_path} config --global credential.helper'
     ) != 'store':
@@ -492,9 +487,9 @@ def parse_args(
                 print(f'[green]permanently set remote [blue]"{config.remote}"')
             case '-m' | '--message' | '--commit_message':
                 skip_next = True
-                temp_data.commit_message = get_arg('commit_message')
+                config['commit_message'] = get_arg('commit_message')
                 print(
-                    f'[green]set commit_message [blue]"{temp_data.commit_message}"')
+                    f'[green]set commit_message [blue]"{config.commit_message}"')
             case '-g' | '--git_path':
                 skip_next = True
                 config['git_path'] = get_arg('git path')
@@ -578,14 +573,35 @@ def pypi():
     os.system(f'{sys.executable} -m twine upload dist/*')
 
 
+def check_commit_msg():
+    while True:
+        config.interactive_input(
+            'commit_message',
+            confirm = False,
+        )
+        act = yes_no.choose(
+            text = f'use commit message [blue]{config.commit_message}?'
+        )
+        match act:
+            case 'yes':
+                break
+            case 'no':
+                config['commit_message'] = None
+            case 'exit':
+                sys.exit()
+
+
+
 def main():
     parse_args(options_list)
     check_config()
     check_git()
     git_init()
+    check_commit_msg()
+    check_branch()
     print(f'selected branch {temp_data.branch}')
     os.system(f'{config.git_path} add --all')
-    os.system(f'{config.git_path} commit -m "{temp_data.commit_message}"')
+    os.system(f'{config.git_path} commit -m "{config.commit_message}"')
     run(f'{config.git_path} branch -m {temp_data.branch}')
     os.system(
         f'{config.git_path} push --set-upstream {config.remote} {temp_data.branch}'
