@@ -591,7 +591,6 @@ def check_commit_msg():
                 sys.exit()
 
 
-
 def main():
     parse_args(options_list)
     check_config()

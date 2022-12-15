@@ -1,6 +1,6 @@
 # changelog
 
-## 22.1.0
+## 22.1.3
 
 - added ability to set commit message
 
