@@ -112,7 +112,7 @@ def check_config():
 
 
 def git_init():
-    if not config['inited_git']:
+    if config['inited_git']:
         return
     run(f'{config.git_path} init')
     check_username()
