@@ -4,14 +4,15 @@ build-backend = "hatchling.build"
 
 [project]
 dependencies = [
-  "easyselect",
-  "betterdata",
+  "gmanka_yml==23.0.0",
+  "easyselect==23.0.0",
+  "betterdata==23.0.0",
   "hatchling",
   "twine",
   "rich",
 ]
 name = "PrettyGit"
-version = "22.1.4"
+version = "23.0.1"
 authors = [
   { name="gmanka", email="gmankab@gmail.com" },
 ]

@@ -1,8 +1,13 @@
 # changelog
 
+
+## 23.0.1
+
+- fixed dependencies
+
 ## 22.1.4
 
--bugfix
+- bugfix
 
 ## 22.1.3
 

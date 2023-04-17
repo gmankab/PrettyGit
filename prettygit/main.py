@@ -29,7 +29,7 @@ config_path = Path(
     f'{proj_path}/.git/prettygit.yml'
 )
 config = Data(
-    file_path=config_path
+    path=config_path
 )
 temp_data = Data()
 run_st = subprocess.getstatusoutput
