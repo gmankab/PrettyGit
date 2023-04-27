@@ -3,9 +3,7 @@
 
 from pathlib import Path
 from easyselect import Sel
-from rich import traceback
 from betterdata import Data
-from dataclasses import dataclass
 from prettygit.setup import (
     app_version,
     yes_no,
@@ -13,12 +11,10 @@ from prettygit.setup import (
 )
 import shutil as sh
 import subprocess
-import rich
+import rich.console
 import sys
 import os
 
-rich.pretty.install()
-traceback.install(show_locals=True)
 c = rich.console.Console()
 print = c.print
 print(
@@ -109,6 +105,9 @@ def check_config():
         ]
     if not config['git_path']:
         config['git_path'] = 'git'
+    if 'upload_to_pypi' not in config:
+        config['upload_to_pypi'] = True
+        config.to_file()
 
 
 def git_init():
@@ -504,6 +503,8 @@ def pypi():
     if not Path(
         f'{proj_path}/pyproject.toml'
     ).exists():
+        return
+    if not config['upload_to_pypi']:
         return
     act = yes_no.choose(
         '\n[green]do you want to upload package to pypi?'

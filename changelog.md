@@ -1,6 +1,10 @@
 # changelog
 
 
+## 23.0.4
+
+- added ablility not to upload to pypi
+
 ## 23.0.3
 
 - fixed dependencies
