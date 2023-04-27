@@ -3,7 +3,7 @@
 
 ## 23.0.4
 
-- added ablility not to upload to pypi
+- added ablility not to ask about upload to pypi
 
 ## 23.0.3
 
