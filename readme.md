@@ -2,10 +2,18 @@
 
 <img src="https://github.com/gmankab/prettygit/raw/main/img/transparent.png">
 
-user-friendly interface for git, supports commits, pushes, and uploading to [pipy.org](https://pypi.org)
+## deprecated
+
+this project is deprecated, please consider to use [lazygit](https://github.com/jesseduffield/lazygit)
+
+## info
+
+user-friendly interface for git, supports commits, pushes, and uploading to [pypi.org](https://pypi.org)
 
 ## navigation
 
+- [deprecated](#deprecated)
+- [info](#info)
 - [installation](#installation)
 - [installation via terminal](#installation-via-terminal)
 - [help](#help)
@@ -56,7 +64,7 @@ example:  prettygit --remote origin
 ```
    args:  -m | --message | --commit_message
    info:  set commit message
-example:  prettygit --commit_message aboba
+gexample:  prettygit --commit_message aboba
 ```
 
 ```
